@@ -7,4 +7,4 @@ help for installation:
 1. download resource
 2. drag and drop in your server source
 3. rename it to qb-inventory
-4. if you use other inventory change all to qb-inventory ( like ps-inventory to qb-inventory )
+4. if you use other inventory change all to qb-inventory ( like ps-inventory to qb-inventory ) .
