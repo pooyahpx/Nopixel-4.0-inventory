@@ -28,7 +28,7 @@ p { margin: 0 !important; }
     --color-primary-inventory-bg: rgba(9, 9, 18, 0.8);
     --color-primary: #23242e;
     --color-secondary: #383942;
-    --color-accent: rgba(250, 244, 165, 1);
+    --color-accent: rgb(7, 238, 219);
 }
 
 .fas.fa-lock {
@@ -1383,10 +1383,10 @@ body {
 	top: 12.5%;
 	text-align: center;
 	font-size: 23px;
-	color: #fff89a;
+	color: #09e2d7;
 	background-color: rgba(250, 244, 165, 0.3);
-    box-shadow: 0 0 1vh #fff89a;
-	border: 1px solid #fff89a;
+    box-shadow: 0 0 1vh #09e2d7;
+	border: 1px solid #09e2d7;
 }
 
 .other-inventory-icon {
@@ -1398,10 +1398,10 @@ body {
 	top: 12.5%;
 	text-align: center;
 	font-size: 23px;
-	color: #fff89a;
+	color: #09e2d7;
 	background-color: rgba(250, 244, 165, 0.3);
-    box-shadow: 0 0 1vh #fff89a;
-	border: 1px solid #fff89a;
+    box-shadow: 0 0 1vh #09e2d7;
+	border: 1px solid #09e2d7;
 }
 
 .pocket-inventory-icon {
@@ -1413,10 +1413,10 @@ body {
 	top: 12.5%;
 	text-align: center;
 	font-size: 23px;
-	color: #fff89a;
+	color: #09e2d7;
 	background-color: rgba(250, 244, 165, 0.3);
-    box-shadow: 0 0 1vh #fff89a;
-	border: 1px solid #fff89a;
+    box-shadow: 0 0 1vh #0effff;
+	border: 1px solid #09e2d7;
 }
 
 /* Pockets */
