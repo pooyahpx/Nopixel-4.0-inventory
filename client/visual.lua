@@ -1,5 +1,3 @@
--- rand range 1.5 meters xy
-
 local RENDER_DISTANCE_SPAWN = 70
 local RENDER_DISTANCE_DESPAWN = 85
 
