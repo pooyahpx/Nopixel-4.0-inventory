@@ -1,5 +1,5 @@
 -- Variables
---------------------------- dev by POOYA --------------------------
+--------------------------DEV BY POYAHPX-----------------------
 local QBCore = exports['qb-core']:GetCoreObject()
 local Drops = {}
 local Trunks = {}
@@ -8,6 +8,9 @@ local Stashes = {}
 local ShopItems = {}
 
 -- Functions
+function GetDrops()
+    return Drops
+end
 
 ---Loads the inventory for the player with the citizenid that is provided
 
@@ -904,7 +907,10 @@ local function AddToDrop(dropId, slot, itemName, amount, info, created)
 			id = dropId,
 		}
 	end
+
+	-- OnDropUpdate(dropId, Drops[dropId])
 end
+
 
 local function RemoveFromDrop(dropId, slot, itemName, amount)
 	amount = tonumber(amount) or 1
@@ -921,6 +927,8 @@ local function RemoveFromDrop(dropId, slot, itemName, amount)
 			Drops[dropId].items[slot] = nil
 		end
 	end
+	
+	-- OnDropUpdate(dropId, Drops[dropId])
 end
 
 local function CreateDropId()
@@ -978,6 +986,9 @@ local function CreateNewDrop(source, fromSlot, toSlot, itemAmount, created)
 		if itemData.name:lower() == "radio" then
 			TriggerClientEvent('Radio.Set', source, false)
 		end
+
+		
+		-- OnDropUpdate(dropId, Drops[dropId])
 	else
 		TriggerClientEvent("QBCore:Notify", source, "You don't have this item!", "error")
 		return
@@ -1094,7 +1105,7 @@ local function OpenInventory(name, id, other, origin)
 			secondInv.label = "Glovebox-"..id
 			secondInv.maxweight = 10000
 			secondInv.inventory = {}
-			secondInv.slots = 8
+			secondInv.slots = 5
 			if Gloveboxes[id] and Gloveboxes[id].isOpen then
 				secondInv.name = "none-inv"
 				secondInv.label = "Glovebox-None"
@@ -1189,7 +1200,7 @@ local function OpenInventory(name, id, other, origin)
 				secondInv.slots = 0
 			end
 		end
-		TriggerClientEvent("qb-inventory:client:closeinv", id)
+		TriggerClientEvent("lj-inventory:client:closeinv", id)
 		TriggerClientEvent("inventory:client:OpenInventory", src, {}, Player.PlayerData.items, secondInv)
 	else
 		TriggerClientEvent("inventory:client:OpenInventory", src, {}, Player.PlayerData.items)
@@ -1334,11 +1345,11 @@ RegisterNetEvent('inventory:server:CraftAttachment', function(itemName, itemCost
 	if not itemName or not itemCosts then return end
 
 	for k, v in pairs(itemCosts) do
-		RemoveItem(src, k, (v*amount))
+		RemoveItem(src, k, (v * amount))
 	end
 	AddItem(src, itemName, amount, toSlot)
-	Player.Functions.SetMetaData("attachmentcraftingrep", Player.PlayerData.metadata["attachmentcraftingrep"] + (points * amount))
-	TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, false)
+	Player.Functions.SetMetaData('attachmentcraftingrep', Player.PlayerData.metadata['attachmentcraftingrep'] + (points * amount))
+	TriggerClientEvent('inventory:client:UpdatePlayerInventory', src, false)
 end)
 
 RegisterNetEvent('inventory:server:SetIsOpenState', function(IsOpen, type, id)
@@ -1465,7 +1476,7 @@ RegisterNetEvent('inventory:server:OpenInventory', function(name, id, other)
 				secondInv.label = "Glovebox-"..id
 				secondInv.maxweight = 10000
 				secondInv.inventory = {}
-				secondInv.slots = 8
+				secondInv.slots = 5
 				if Gloveboxes[id] and Gloveboxes[id].isOpen then
 					secondInv.name = "none-inv"
 					secondInv.label = "Glovebox-None"
@@ -1560,7 +1571,7 @@ RegisterNetEvent('inventory:server:OpenInventory', function(name, id, other)
 					secondInv.slots = 0
 				end
 			end
-			TriggerClientEvent("qb-inventory:client:closeinv", id)
+			TriggerClientEvent("lj-inventory:client:closeinv", id)
 			TriggerClientEvent("inventory:client:OpenInventory", src, {}, Player.PlayerData.items, secondInv)
 		else
 			TriggerClientEvent("inventory:client:OpenInventory", src, {}, Player.PlayerData.items)
@@ -2133,7 +2144,7 @@ RegisterNetEvent('inventory:server:SetInventoryData', function(fromInventory, to
                 AddItem(src, itemData.name, fromAmount, toSlot, itemData.info)
                 TriggerClientEvent('qb-shops:client:UpdateShop', src, QBCore.Shared.SplitStr(shopType, "_")[2], itemData, fromAmount)
                 QBCore.Functions.Notify(src, itemInfo["label"] .. " bought!", "success")
-                exports['ps-mdt']:CreateWeaponInfo(serial, imageurl, notes, owner, weapClass, weapModel)
+                -- exports['ps-mdt']:CreateWeaponInfo(serial, imageurl, notes, owner, weapClass, weapModel)
                 TriggerEvent("qb-log:server:CreateLog", "shops", "Shop item bought", "green", "**"..GetPlayerName(src) .. "** bought a " .. itemInfo["label"] .. " for $"..price)
         elseif bankBalance >= price then
                 Player.Functions.RemoveMoney("bank", price, "itemshop-bought-item")
@@ -2150,7 +2161,7 @@ RegisterNetEvent('inventory:server:SetInventoryData', function(fromInventory, to
                 AddItem(src, itemData.name, fromAmount, toSlot, itemData.info)
                 TriggerClientEvent('qb-shops:client:UpdateShop', src, QBCore.Shared.SplitStr(shopType, "_")[2], itemData, fromAmount)
                 QBCore.Functions.Notify(src, itemInfo["label"] .. " bought!", "success")
-				exports['ps-mdt']:CreateWeaponInfo(serial, imageurl, notes, owner, weapClass, weapModel)
+				-- exports['ps-mdt']:CreateWeaponInfo(serial, imageurl, notes, owner, weapClass, weapModel)
                 TriggerEvent("qb-log:server:CreateLog", "shops", "Shop item bought", "green", "**"..GetPlayerName(src) .. "** bought a " .. itemInfo["label"] .. " for $"..price)
             else
                 QBCore.Functions.Notify(src, "You don't have enough cash..", "error")
@@ -2272,10 +2283,10 @@ RegisterServerEvent("inventory:server:GiveItem", function(target, name, amount, 
 		end
 		if RemoveItem(src, item.name, amount, item.slot) then
 			if AddItem(target, item.name, amount, false, item.info, item.created) then
-				TriggerClientEvent('inventory:client:ItemBox',target, QBCore.Shared.Items[item.name], "add")
+				TriggerClientEvent('inventory:client:ItemBox',target, QBCore.Shared.Items[item.name], "add", amount)
 				QBCore.Functions.Notify(target, "You Received "..amount..' '..item.label.." From "..Player.PlayerData.charinfo.firstname.." "..Player.PlayerData.charinfo.lastname)
 				TriggerClientEvent("inventory:client:UpdatePlayerInventory", target, true)
-				TriggerClientEvent('inventory:client:ItemBox',src, QBCore.Shared.Items[item.name], "remove")
+				TriggerClientEvent('inventory:client:ItemBox',src, QBCore.Shared.Items[item.name], "remove", amount)
 				QBCore.Functions.Notify(src, "You gave " .. OtherPlayer.PlayerData.charinfo.firstname.." "..OtherPlayer.PlayerData.charinfo.lastname.. " " .. amount .. " " .. item.label .."!")
 				TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, true)
 				TriggerClientEvent('qb-inventory:client:giveAnim', src)
