@@ -1,6 +1,21 @@
-# Nopixel-4.0-inventory
-nopixel 4.0 inventory customize 
-![image](https://github.com/pooyahpx/Nopixel-4.0-inventory/assets/73234330/528f907f-377b-4b85-ae27-f4503223a563)
+NEW UPDATE 
+
+YOU CAN DOWNLOAD AND ENJOY
+
+![Screenshot (223)](https://github.com/pooyahpx/Nopixel-4.0-inventory/assets/73234330/bbd4bc1e-b183-4985-892b-fd08dd3c21c2)
+ 
+
+![Screenshot (219)](https://github.com/pooyahpx/Nopixel-4.0-inventory/assets/73234330/f578701a-a287-4fb0-972b-afe084b8b242)
+
+
+![Screenshot (220)](https://github.com/pooyahpx/Nopixel-4.0-inventory/assets/73234330/d161a0d6-652d-4180-9aab-018c21f04ae8)
+
+
+![Screenshot (222)](https://github.com/pooyahpx/Nopixel-4.0-inventory/assets/73234330/fb50d7d7-a8cd-44f7-8c53-11777e2a22f7)
+
+
+![Screenshot (223)](https://github.com/pooyahpx/Nopixel-4.0-inventory/assets/73234330/45d1bd5c-06ca-4958-8248-26766d304bde)
+
 
 # help for installation:
 
