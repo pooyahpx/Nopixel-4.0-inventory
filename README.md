@@ -28,3 +28,7 @@ YOU CAN DOWNLOAD AND ENJOY
 
 # POV
 if ur last inventory was another inventory you should open ur all resourcs folder in vs code and export all lj-inventory or ps-inventory TO qb-inventory
+
+# DISCORD FOR MORE HELP 
+
+IF YOU NEED MORE HELP TEXT ME ON DISCORD poya3724
