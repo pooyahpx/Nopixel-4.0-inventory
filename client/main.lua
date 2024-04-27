@@ -16,18 +16,6 @@ local WeaponAttachments = {}
 local showBlur = true
 local stress = 0
 
-RegisterCommand('robme', function()
-    local ped = PlayerPedId()
-    QBCore.Functions.Progressbar("robbingme", "Touching myself...", 1000, false, true, {
-        disableMovement = true,
-        disableCarMovement = true,
-        disableMouse = false,
-        disableCombat = true,
-    }, {}, {}, {}, function() -- Done
-        TriggerServerEvent("inventory:server:OpenInventory", "otherplayer", GetPlayerServerId(PlayerId()))
-    end)
-end, false)
-
 -- Imported from qb-hud
 RegisterNetEvent('hud:client:UpdateStress', function(newStress) -- Add this event with adding stress elsewhere
     stress = newStress
@@ -66,31 +54,31 @@ end
 
 exports("HasItem", HasItem)
 
--- RegisterNUICallback('showBlur', function()
---     Wait(50)
---     TriggerEvent("ps-inventory:client:showBlur")
--- end) 
--- RegisterNetEvent("ps-inventory:client:showBlur", function()
---     Wait(50)
---     showBlur = not showBlur
--- end)
+RegisterNUICallback('showBlur', function()
+    Wait(50)
+    TriggerEvent("qb-inventory:client:showBlur")
+end) 
+RegisterNetEvent("qb-inventory:client:showBlur", function()
+    Wait(50)
+    showBlur = not showBlur
+end)
 
 -- Functions
 
--- local function GetClosestVending()
---     local ped = PlayerPedId()
---     local pos = GetEntityCoords(ped)
---     local object = nil
---     for _, machine in pairs(Config.VendingObjects) do
---         local ClosestObject = GetClosestObjectOfType(pos.x, pos.y, pos.z, 0.75, GetHashKey(machine), 0, 0, 0)
---         if ClosestObject ~= 0 then
---             if object == nil then
---                 object = ClosestObject
---             end
---         end
---     end
---     return object
--- end
+local function GetClosestVending()
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
+    local object = nil
+    for _, machine in pairs(Config.VendingObjects) do
+        local ClosestObject = GetClosestObjectOfType(pos.x, pos.y, pos.z, 0.75, GetHashKey(machine), 0, 0, 0)
+        if ClosestObject ~= 0 then
+            if object == nil then
+                object = ClosestObject
+            end
+        end
+    end
+    return object
+end
 
 local function OpenVending()
     local ShopItems = {}
@@ -336,8 +324,8 @@ local function CreateItemDrop(index)
     DropsNear[index].isDropShowing = true
     PlaceObjectOnGroundProperly(dropItem)
     FreezeEntityPosition(dropItem, true)
-    if Config.TargetSystem == "qb-target" then
-        exports['qb-target']:AddTargetEntity(dropItem, {
+	if Config.UseTarget then
+		exports['qb-target']:AddTargetEntity(dropItem, {
 			options = {
 				{
 					icon = 'fa-solid fa-bag-shopping',
@@ -349,24 +337,6 @@ local function CreateItemDrop(index)
 			},
 			distance = 2.5,
 		})
-    elseif Config.TargetSystem == "interact" then
-        exports.interact:AddLocalEntityInteraction({
-            entity = dropItem,
-            name = 'dropitem', -- optional
-            distance = 2.0, -- optional
-            interactDst = 0.5, -- optional
-            ignoreLos = true,
-            offset = vec3(0.0, 0.0, 1.0), -- optional
-            options = {
-                {
-                    icon = 'fa-solid fa-bag-shopping',
-                    label = 'Open Drop',
-                    action = function()
-                        TriggerServerEvent("inventory:server:OpenInventory", "drop", index)
-                    end,
-                }
-            },
-        })
 	end
 end
 
@@ -474,6 +444,7 @@ RegisterNetEvent('inventory:client:OpenInventory', function(PlayerAmmo, inventor
                     currentOtherInventory = other.name
                 end
                 QBCore.Functions.TriggerCallback('inventory:server:ConvertQuality', function(data)
+                    skelly = exports["ir_skeleton"]:SkeletonDamages()
                     inventory = data.inventory
                     other = data.other
                     SendNUIMessage({
@@ -485,14 +456,13 @@ RegisterNetEvent('inventory:client:OpenInventory', function(PlayerAmmo, inventor
                         Ammo = PlayerAmmo,
                         maxammo = Config.MaximumAmmoValues,
                         Name = PlayerData.charinfo.firstname .." ".. PlayerData.charinfo.lastname .." - [".. GetPlayerServerId(PlayerId()) .."]", 
-    
-                        pName = PlayerData.charinfo.firstname .." ".. PlayerData.charinfo.lastname,
-                        pNumber = "(" .. string.sub(PlayerData.charinfo.phone, 1, 3) .. ") " .. string.sub(PlayerData.charinfo.phone, 4, 6) .. "-" .. string.sub(PlayerData.charinfo.phone, 7),
+                        skelly = skelly,
+                        pName = PlayerData.charinfo.firstname .. PlayerData.charinfo.lastname, 
+                        pNumber = PlayerData.charinfo.phone,
                         pCID = PlayerData.citizenid,
                         pID = GetPlayerServerId(PlayerId()),
-    
                         pStress = stress,
-                        pDamage = 200 - GetEntityHealth(PlayerPedId()),
+                        pDamage = GetEntityHealth(PlayerPedId()) - 100,
     
     
                     })
@@ -501,7 +471,7 @@ RegisterNetEvent('inventory:client:OpenInventory', function(PlayerAmmo, inventor
 
         end)
         else
-            Wait(Config.Waittime)
+            Wait(500)
             ToggleHotbar(false)
             if showBlur == true then
                 TriggerScreenblurFadeIn(1000)
@@ -522,14 +492,13 @@ RegisterNetEvent('inventory:client:OpenInventory', function(PlayerAmmo, inventor
                     Ammo = PlayerAmmo,
                     maxammo = Config.MaximumAmmoValues,
                     Name = PlayerData.charinfo.firstname .." ".. PlayerData.charinfo.lastname .." - [".. GetPlayerServerId(PlayerId()) .."]", 
-    
-                    pName = PlayerData.charinfo.firstname .." ".. PlayerData.charinfo.lastname,
-                    pNumber = "(" .. string.sub(PlayerData.charinfo.phone, 1, 3) .. ") " .. string.sub(PlayerData.charinfo.phone, 4, 6) .. "-" .. string.sub(PlayerData.charinfo.phone, 7),
+                    pName = PlayerData.charinfo.firstname .. PlayerData.charinfo.lastname, 
+                    pNumber = PlayerData.charinfo.phone,
                     pCID = PlayerData.citizenid,
                     pID = GetPlayerServerId(PlayerId()),
     
                     pStress =  stress,
-                    pDamage = 200 - GetEntityHealth(PlayerPedId()),
+                    pDamage = GetEntityHealth(PlayerPedId()) - 110,
     
                 })
             inInventory = true
@@ -761,7 +730,7 @@ RegisterCommand('inventory', function()
             local ped = PlayerPedId()
             local curVeh = nil
             local VendingMachine = nil
-            -- if not Config.UseTarget then VendingMachine = GetClosestVending() end
+            if not Config.UseTarget then VendingMachine = GetClosestVending() end
 
             if IsPedInAnyVehicle(ped, false) then -- Is Player In Vehicle
                 local vehicle = GetVehiclePedIsIn(ped, false)
@@ -1117,51 +1086,6 @@ CreateThread(function()
     end
 end)
 
-CreateThread(function()
-    if Config.TargetSystem == "qb-target" then
-        exports['qb-target']:AddTargetModel(Config.VendingObjects, {
-            options = {
-                {
-                    icon = 'fa-solid fa-cash-register',
-                    label = 'Open Vending',
-                    action = function()
-                        OpenVending()
-                    end
-                },
-            },
-            distance = 2.5
-        })
-    elseif Config.TargetSystem == "interact" then
-            local vendingobjects = { -- The mighty list of dumpters/trash cans
-            `prop_vend_soda_01`,
-            `prop_vend_soda_02`,
-            `prop_vend_water_01`
-            }
-        
-            for i = 1, #vendingobjects do
-            exports.interact:AddModelInteraction({
-                model = vendingobjects[i],
-                offset = vec3(0.0, 0.0, 0.0), -- optional
-                -- bone = 'engine', -- optional
-                -- name = 'interactionName', -- optional
-                id = 'vending_', -- needed for removing interactions
-                distance = 4.0, -- optional
-                interactDst = 1.5, -- optional
-                ignoreLos = true,
-                options = {
-                    {
-                        icon = 'fa-solid fa-cash-register',
-                        label = 'Open Vending',
-                        action = function()
-                            OpenVending()
-                        end
-                    },
-                },
-            })
-        end
-    end
-end)
-
 
     --qb-target
     RegisterNetEvent("inventory:client:Crafting", function(dropId)
@@ -1179,58 +1103,28 @@ end)
         TriggerServerEvent("inventory:server:OpenInventory", "attachment_crafting", math.random(1, 99), crafting)
     end)
     
-
---     CreateThread(function()
---         if Config.TargetSystem == "qb-target" then
---         exports['qb-target']:AddTargetModel(Config.toolBoxModels, {
---             options = {
---                 {
---                     event = "inventory:client:WeaponAttachmentCrafting",
---                     icon = "fas fa-wrench",
---                     label = "Weapon Attachment Crafting", 
---                 },
---                 {
---                     event = "inventory:client:Crafting",
---                     icon = "fas fa-wrench",
---                     label = "Item Crafting", 
---                 },
---             },
---         distance = 1.0
---     })
---     elseif Config.TargetSystem == "interact" then
---         local toolBoxModels = {
---             `prop_toolchest_05`,
---             `prop_tool_bench02_ld`,
---             `prop_tool_bench02`,
---             `prop_toolchest_02`,
---             `prop_toolchest_03`,
---             `prop_toolchest_03_l2`,
---             `prop_toolchest_05`,
---             `prop_toolchest_04`,
---         }
---         for i = 1, #vendingobjects do
---         exports.interact:AddModelInteraction({
---             model = toolBoxModels[i],
---             offset = vec3(0.0, 0.0, 0.0), -- optional
---             -- bone = 'engine', -- optional
---             -- name = 'interactionName', -- optional
---             id = 'crafting_', -- needed for removing interactions
---             distance = 4.0, -- optional
---             interactDst = 1.5, -- optional
---             ignoreLos = true,
---             options = {
---                 {
---                     event = "inventory:client:WeaponAttachmentCrafting",
---                     icon = "fas fa-wrench",
---                     label = "Weapon Attachment Crafting", 
---                 },
---                 {
---                     event = "inventory:client:Crafting",
---                     icon = "fas fa-wrench",
---                     label = "Item Crafting", 
---                 },
---             },
---         })
---         end
---     end
--- end)
+    local toolBoxModels = {
+        `prop_toolchest_05`,
+        `prop_tool_bench02_ld`,
+        `prop_tool_bench02`,
+        `prop_toolchest_02`,
+        `prop_toolchest_03`,
+        `prop_toolchest_03_l2`,
+        `prop_toolchest_05`,
+        `prop_toolchest_04`,
+    }
+    exports['qb-target']:AddTargetModel(toolBoxModels, {
+            options = {
+                {
+                    event = "inventory:client:WeaponAttachmentCrafting",
+                    icon = "fas fa-wrench",
+                    label = "Weapon Attachment Crafting", 
+                },
+                {
+                    event = "inventory:client:Crafting",
+                    icon = "fas fa-wrench",
+                    label = "Item Crafting", 
+                },
+            },
+        distance = 1.0
+    })
