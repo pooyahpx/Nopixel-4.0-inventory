@@ -1,3 +1,5 @@
+-- rand range 1.5 meters xy
+
 local RENDER_DISTANCE_SPAWN = 70
 local RENDER_DISTANCE_DESPAWN = 85
 
@@ -158,11 +160,11 @@ local function tablelength(table)
     return count
 end
 
-RegisterNetEvent('ps-inventory:setDropVisualData', function(data)
+RegisterNetEvent('qb-inventory:setDropVisualData', function(data)
     droppedItems = data
 end)
 
-RegisterNetEvent('ps-inventory:updateDropVisualData', function(dropId, coords, itemsTable)
+RegisterNetEvent('qb-inventory:updateDropVisualData', function(dropId, coords, itemsTable)
     local pedCoord = GetEntityCoords(PlayerPedId())
 
     if #itemsTable == 0 and droppedItems[dropId] then
@@ -252,3 +254,6 @@ AddEventHandler('onResourceStop', function(resourceName)
         end
     end
 end)
+
+
+---- DEV BY POOYA HPX ----
