@@ -1,8 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
-
+author 'pooyahpx'
 description 'qb-inventory'
-version '1.0.3'
+version '1.0.4'
 
 shared_scripts {
 	'config.lua',
@@ -12,11 +12,12 @@ shared_scripts {
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
 	'server/main.lua',
-	-- 'server/visual.lua',
+	'server/visual.lua',
 }
 
 client_scripts {
 	'client/main.lua',
+	'client/visual.lua',
 }
 
 
@@ -38,5 +39,6 @@ files {
 }
 
 lua54 'yes'
+
 
 ------ dev BY POOYA --------
