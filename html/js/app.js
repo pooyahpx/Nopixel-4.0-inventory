@@ -276,21 +276,23 @@ function CanQuickMove() {
 //    }
 //});
 
-$(document).on("click", ".item-slot", function (e) {
+$(document).on("click", ".item-slot", function(e) {
     e.preventDefault();
     var ItemData = $(this).data("item");
-    $(".combine-option-container").hide();
+
     if (ItemData !== null && ItemData !== undefined) {
         if (ItemData.name !== undefined) {
             if (ItemData.name.split("_")[0] == "weapon") {
                 if (!$("#weapon-attachments").length) {
+                    // if (ItemData.info.attachments !== null && ItemData.info.attachments !== undefined && ItemData.info.attachments.length > 0) {
                     $(".ply-iteminfo-container").append(
-                        '<button class="item-shit-option" id="weapon-attachments"><i class="fas fa-gun"></i> Weapon</button>'
+                        '<button class="inv-option-item" id="weapon-attachments"><p><i style="margin-top: 1rem" class="fas fa-gun"></i></p></button>'
                     );
                     $("#weapon-attachments").hide().fadeIn(250);
                     ClickedItemData = ItemData;
+                    // }
                 } else if (ClickedItemData == ItemData) {
-                    $("#weapon-attachments").fadeOut(250, function () {
+                    $("#weapon-attachments").fadeOut(250, function() {
                         $("#weapon-attachments").remove();
                     });
                     ClickedItemData = {};
@@ -300,7 +302,7 @@ $(document).on("click", ".item-slot", function (e) {
             } else {
                 ClickedItemData = {};
                 if ($("#weapon-attachments").length) {
-                    $("#weapon-attachments").fadeOut(250, function () {
+                    $("#weapon-attachments").fadeOut(250, function() {
                         $("#weapon-attachments").remove();
                     });
                 }
@@ -308,7 +310,7 @@ $(document).on("click", ".item-slot", function (e) {
         } else {
             ClickedItemData = {};
             if ($("#weapon-attachments").length) {
-                $("#weapon-attachments").fadeOut(250, function () {
+                $("#weapon-attachments").fadeOut(250, function() {
                     $("#weapon-attachments").remove();
                 });
             }
@@ -316,7 +318,7 @@ $(document).on("click", ".item-slot", function (e) {
     } else {
         ClickedItemData = {};
         if ($("#weapon-attachments").length) {
-            $("#weapon-attachments").fadeOut(250, function () {
+            $("#weapon-attachments").fadeOut(250, function() {
                 $("#weapon-attachments").remove();
             });
         }
@@ -351,10 +353,10 @@ $(document).on("click", ".weapon-attachments-back", function(e) {
 //     $( ".player-inventory-bg" ).css( "background-color", color);
 //     $( ".other-inventory-bg" ).css( "background-color", color);
 //     $( ".inv-options" ).css( "background-color", color);
-//     localStorage.setItem('ps-inventory-color', color);
+//     localStorage.setItem('qb-inventory-color', color);
 // }
 
-// const savedColor = localStorage.getItem('ps-inventory-color');
+// const savedColor = localStorage.getItem('qb-inventory-color');
 
 // if (savedColor) {
 //     changeInventoryColor(savedColor)
@@ -551,34 +553,29 @@ var gender = "Man";
 }
 
 // ID Cards
-var csnPart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.citizenid + "</b></span>";
-var firstNamePart = "<span style=\"background-color: #333333; padding: 5px; margin-left: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.firstname + "</b></span>";
-var lastNamePart = "<span style=\"background-color: #333333; padding: 5px; margin-left: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.lastname + "</b></span>";
-var birthDatePart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.birthdate + "</b></span>";
-var genderPart = "<span style=\"background-color: #333333; padding: 5px; margin-left: 5px;\"><b> <i class='fas fa-address-card'></i> " + gender + "</b></span>";
-var nationalityPart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.nationality +  "</b></span>";
-var endorsement = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.endorsement  +  "</b></span>";
-var type = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.type +  "</b></span>";
+var csnPart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.citizenid + "</b></span>";
+var firstNamePart = "<span style=\"background-color: #1a1c1c; padding: 5px; margin-left: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.firstname + "</b></span>";
+var lastNamePart = "<span style=\"background-color: #1a1c1c; padding: 5px; margin-left: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.lastname + "</b></span>";
+var birthDatePart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.birthdate + "</b></span>";
+var genderPart = "<span style=\"background-color: #1a1c1c; padding: 5px; margin-left: 5px;\"><b> <i class='fas fa-address-card'></i> " + gender + "</b></span>";
+var nationalityPart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-address-card'></i> " + itemData.info.nationality +  "</b></span>";
 
 // Harness
-var BluePrintUsePart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-user-tag'></i> Type: " + itemData.info.type  + "</b></span>";
-var harnessUsePart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-user-tag'></i> " + itemData.info.uses  + " uses left." + "</b></span>";
-// var MarkedUsePart = "<p><strong>Worth: </strong><span>£" + itemData.info.worth + "</span></p><p style=\"font-size:11px\"><b>Weight: </b>" + itemData.weight + " | <b>Amount: </b> " + itemData.amount + " | <b>Quality: </b> " + "<a style=\"font-size:11px;color:green\">" + Math.floor(itemData.info.quality) + "</a>";
-var MarkedUsePart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-user-tag'></i> £" + itemData.info.worth + "</span></p><p style=\"font-size:11px\"><b>Weight: </b>" + itemData.weight + " | <b>Amount: </b> " + itemData.amount + " | <b>Quality: </b> " + "<a style=\"font-size:11px;color:green\">" + Math.floor(itemData.info.quality) + "</a>";
+var harnessUsePart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-user-tag'></i> " + itemData.info.uses  + " uses left." + "</b></span>";
 
 // Weapons 
-var serialNumberPart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-barcode'></i> " + itemData.info.serie  + "</b></span>";
-var ammoPart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-gun'></i> " + itemData.info.ammo  + "</b></span>";
-var ammoPart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-gun'></i> " + itemData.info.ammo  + "</b></span>";
+var serialNumberPart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-barcode'></i> " + itemData.info.serie  + "</b></span>";
+var ammoPart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-gun'></i> " + itemData.info.ammo  + "</b></span>";
 
 // Weapon Casing Evidence
-var streetPart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-earth-americas'></i> " + itemData.info.street + "</b></span>";
-var casingPart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-clipboard'></i> " + itemData.info.label  + "</b></span>";
-var ammotypePart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-gun'></i> " + itemData.info.ammotype  + "</b></span>";
+var streetPart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-earth-americas'></i> " + itemData.info.street + "</b></span>";
+var casingPart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-clipboard'></i> " + itemData.info.label  + "</b></span>";
+var ammotypePart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-gun'></i> " + itemData.info.ammotype  + "</b></span>";
+var ammolabelPart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-gun'></i> " + itemData.info.ammolabel + "</b></span>";
 
 // Default Items
-var weightPart = "<span style=\"background-color: #333333; padding: 5px;\"><b> <i class='fas fa-weight-hanging'></i> " + itemData.weight + "</b></span>";
-var qualityPart = "<span style=\"background-color: #333333; padding: 5px; margin-left: 5px;\"><b><i class='fas fa-tools'></i></b> " + Math.floor(itemData.info.quality) + "</span>";
+var weightPart = "<span style=\"background-color: #1a1c1c; padding: 5px;\"><b> <i class='fas fa-weight-hanging'></i> " + itemData.weight + "</b></span>";
+var qualityPart = "<span style=\"background-color: #1a1c1c; padding: 5px; margin-left: 5px;\"><b><i class='fas fa-tools'></i></b> " + Math.floor(itemData.info.quality) + "</span>";
 var descriptionPart = "<a style=\"font-size:13px; display: block; margin-top: 15px;\">" + itemData.description + "</a>";
 var finalHTML = "<p style=\"font-size:16px\">" + weightPart + qualityPart + "<p>" + descriptionPart + "</p>";
 
@@ -589,48 +586,36 @@ let leftOffset = $(dom).offset().left + 120;
 if (leftOffset + element.width() > $(window).width()) {
     leftOffset = $(window).width() - element.width() - 20;
 }
-element.css('left', leftOffset);
-if (itemData != null && itemData.info != "") {
-    if (itemData.name == "id_card") {
-        var finalIDCard = csnPart + "<br><br>" + firstNamePart + lastNamePart + "<br><br>" + birthDatePart +  genderPart + "<br><br>" + nationalityPart + "<br><br>" + weightPart + qualityPart  + descriptionPart + "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>");
-        $(".item-info-description").html(finalIDCard);
-    } else if (itemData.name == "driver_license") {
-        var finalDriverseLicense = firstNamePart + lastNamePart + "<br><br>" + birthDatePart + "<br><br>"  + endorsement +  "<br><br>" + type + "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>");
-        $(".item-info-description").html(finalDriverseLicense);
-    } else if (itemData.name == "permit") {
-        var permitDriverseLicense = firstNamePart + lastNamePart + "<br><br>" + birthDatePart + "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>");
-        $(".item-info-description").html(permitDriverseLicense);
-    } else if (itemData.name == "weaponlicense") {
-        var finalWeaponsLicense = firstNamePart + lastNamePart + "<br><br>" + birthDatePart + "<br><br>"  +  "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>");
-        $(".item-info-description").html(finalWeaponsLicense);
-    } else if (itemData.name == "lawyerpass") {
-        var finalLawyerPass = firstNamePart + lastNamePart + "<br><br>" + csnPart + "<br><br>"  +  "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>");
-        $(".item-info-description").html(finalLawyerPass);
-    } else if (itemData.name == "harness") {
-        var finalHarness = harnessUsePart + "<br><br>"  +  "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>");
-        $(".item-info-description").html(finalHarness);
-    } else if (itemData.name == "markedbills") {
-        var finalMarked = MarkedUsePart + "<br><br>"  +  "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>");
-        $(".item-info-description").html(finalMarked);
-    } else if (itemData.name == "blueprint") {
-        var finalblueprint = BluePrintUsePart + "<br><br>"  +  "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>"); 
-        $(".item-info-description").html(finalblueprint);
-    } else if (itemData.type == "weapon") {
-        var finalWeapon = ammoPart + "<br><br>"  + serialNumberPart + "<br><br>"  +  "</p>";
-        $(".item-info-title").html("<p>" + itemData.label + "</p>");
-        if (itemData.info.ammo == undefined) {
-            itemData.info.ammo = 0;
-        } else {
-            itemData.info.ammo != null ? itemData.info.ammo : 0;
-        }
+    element.css('left', leftOffset);
+    if (itemData != null && itemData.info != "") {
+        if (itemData.name == "id_card") {
+            var finalIDCard = csnPart + firstNamePart + "<br><br>" + birthDatePart +  genderPart + "<br><br>" + nationalityPart + "<br><br>" + weightPart + qualityPart  + descriptionPart + "</p>";
+            $(".item-info-title").html("<p>" + itemData.label + "</p>");
+            $(".item-info-description").html(finalIDCard);
+        } else if (itemData.name == "driver_license") {
+            var finalDriverseLicense = firstNamePart + lastNamePart + "<br><br>" + birthDatePart + "<br><br>"  +  "</p>";
+            $(".item-info-title").html("<p>" + itemData.label + "</p>");
+            $(".item-info-description").html(finalDriverseLicense);
+        } else if (itemData.name == "weaponlicense") {
+            var finalWeaponsLicense = firstNamePart + lastNamePart + "<br><br>" + birthDatePart + "<br><br>"  +  "</p>";
+            $(".item-info-title").html("<p>" + itemData.label + "</p>");
+            $(".item-info-description").html(finalWeaponsLicense);
+        } else if (itemData.name == "lawyerpass") {
+            var finalLawyerPass = firstNamePart + lastNamePart + "<br><br>" + csnPart + "<br><br>"  +  "</p>";
+            $(".item-info-title").html("<p>" + itemData.label + "</p>");
+            $(".item-info-description").html(finalLawyerPass);
+        } else if (itemData.name == "harness") {
+            var finalHarness = harnessUsePart + "<br><br>"  +  "</p>";
+            $(".item-info-title").html("<p>" + itemData.label + "</p>");
+            $(".item-info-description").html(finalHarness);
+        } else if (itemData.type == "weapon") {
+            var finalWeapon = ammoPart + "<br><br>"  + serialNumberPart + "<br><br>"  +  "</p>";
+            $(".item-info-title").html("<p>" + itemData.label + "</p>");
+            if (itemData.info.ammo == undefined) {
+                itemData.info.ammo = 0;
+            } else {
+                itemData.info.ammo != null ? itemData.info.ammo : 0;
+            }
             if (itemData.info.attachments != null) {
                 var attachmentString = "";
                 $.each(itemData.info.attachments, function(i, attachment) {
@@ -662,25 +647,6 @@ if (itemData != null && itemData.info != "") {
                     itemData.description +
                     "</p><p style=\"font-size:11px\"><b>Weight: </b>" + itemData.weight + " | <b>Amount: </b> " + itemData.amount + " | <b>Quality: </b> " + "<a style=\"font-size:11px;color:green\">" + Math.floor(itemData.info.quality) + "</a>"
                 );
-            } else if (itemData.name == "backpack") {
-                var backpack = backpackUsePart + "<br><br>"  +  "</p>";
-                $(".item-info-title").html("<p>" + label + "</p>");
-                $(".item-info-description").html(backpack);
-            } else if (itemData.name == "backpack2") {
-                $(".item-info-title").html("<p>" + label + "</p>");
-                $(".item-info-description").html(
-                    "<p><strong>ID: </strong><span>" +
-                    itemData.info.ID +
-                    "</span></p><p><strong>Weight: </strong><span>" +
-                    itemData.info.weight +
-                    "</span></p><p><strong>Slots: </strong><span>" +
-                    itemData.info.slots +
-                    "</span></p>"
-                );
-            } else if (itemData.name == "jerrycan") { // Jerry Can (CDN-Fuel!)
-                var finaljerrycan = jerrycanUsePart + "<br><br>"  +  "</p>";
-                $(".item-info-title").html("<p>" + itemData.label + "</p>");
-                $(".item-info-description").html(finaljerrycan);
             } else if (itemData.info.type == "fingerprint") {
                 $(".item-info-description").html(
                     "<p><strong>Evidence material: </strong><span>" +
@@ -714,6 +680,9 @@ if (itemData != null && itemData.info != "") {
             $(".item-info-title").html("<p>" + itemData.label + "</p>");
             $(".item-info-description").html("<p style=\"font-size:16px\"><b> <i class='fas fa-weight-hanging'></i> </b>" + itemData.weight + " | <b><i class='fas fa-tools'></i></b> " + "<a style=\"font-size:16px\">" + Math.floor(itemData.info.quality) + "<p>" +"<a style=\"font-size:13px\">" +  itemData.description + "</p>" + "</a>");
         } else if (itemData.name == "moneybag") {
+            $(".item-info-title").html("<p>" + itemData.label + "</p>");
+            $(".item-info-description").html("<p style=\"font-size:16px\"><b> <i class='fas fa-weight-hanging'></i> </b>" + itemData.weight + " | <b><i class='fas fa-tools'></i></b> " + "<a style=\"font-size:16px\">" + Math.floor(itemData.info.quality) + "<p>" +"<a style=\"font-size:13px\">" +  itemData.description + "</p>" + "</a>");
+        } else if (itemData.name == "markedbills") {
             $(".item-info-title").html("<p>" + itemData.label + "</p>");
             $(".item-info-description").html("<p style=\"font-size:16px\"><b> <i class='fas fa-weight-hanging'></i> </b>" + itemData.weight + " | <b><i class='fas fa-tools'></i></b> " + "<a style=\"font-size:16px\">" + Math.floor(itemData.info.quality) + "<p>" +"<a style=\"font-size:13px\">" +  itemData.description + "</p>" + "</a>");
         } else if (itemData.name == "visa" || itemData.name == "mastercard") {
@@ -762,7 +731,7 @@ function handleDragDrop() {
                     $(this).find(".item-slot-amount p").html("0");
                     $(".ui-draggable-dragging")
                         .find(".item-slot-amount p")
-                        // .html(" " + itemData.amount + " $" + itemData.price);
+                        .html(" " + itemData.amount + " $" + itemData.price);
                     $(".ui-draggable-dragging").find(".item-slot-key").remove();
                     if ($(this).parent().attr("data-inventory") == "hotbar") {
                         // $(".ui-draggable-dragging").find(".item-slot-key").remove();
@@ -786,7 +755,7 @@ function handleDragDrop() {
                 if (itemData.price != null) {
                     $(this)
                         .find(".item-slot-amount p")
-                        // .html(" " + itemData.amount + " $" + itemData.price);
+                        .html(" " + itemData.amount + " $" + itemData.price);
                     if ($(this).parent().attr("data-inventory") == "hotbar") {
                         // $(".ui-draggable-dragging").find(".item-slot-key").remove();
                     }
@@ -808,10 +777,10 @@ function handleDragDrop() {
                 if (itemData.price != null) {
                     $(this)
                         .find(".item-slot-amount p")
-                        // .html(" " + itemData.amount + " $" + itemData.price);
+                        .html(" " + itemData.amount + " $" + itemData.price);
                     $(".ui-draggable-dragging")
                         .find(".item-slot-amount p")
-                        // .html(" " + itemData.amount + " $" + itemData.price);
+                        .html(" " + itemData.amount + " $" + itemData.price);
                     $(".ui-draggable-dragging").find(".item-slot-key").remove();
                     if ($(this).parent().attr("data-inventory") == "hotbar") {
                         // $(".ui-draggable-dragging").find(".item-slot-key").remove();
@@ -862,7 +831,6 @@ function handleDragDrop() {
             setTimeout(function() {
                 IsDragging = false;
             }, 300);
-            $(this).css("background", "rgba(0, 0, 0, 0.3)");
             $(this).find("img").css("filter", "brightness(100%)");
             // $("#item-use").css("background", "rgba(" + InventoryOption + ", 0.3)");
         },
@@ -1003,8 +971,8 @@ function updateweights($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                     itemData.name +
                     '" /></div><div class="item-slot-amount"><p>' +
                     itemData.amount +
-                    '</div><div class="item-slot-name1"><p>' +
-                    " £" +
+                    '</div><div class="item-slot-name"><p>' +
+                    " $" +
                     itemData.price +
                     '</p></div><div class="item-slot-label"><p>' +
                     itemData.label +
@@ -1049,8 +1017,8 @@ function updateweights($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                     itemData.name +
                     '" /></div><div class="item-slot-amount"><p>' +
                     itemData.amount +
-                    '</div><div class="item-slot-name1"><p>' +
-                    " £" +
+                    '</div><div class="item-slot-name"><p>' +
+                    " $" +
                     itemData.price +
                     '</p></div><div class="item-slot-label"><p>' +
                     itemData.label +
@@ -1094,8 +1062,8 @@ function updateweights($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                     itemData.name +
                     '" /></div><div class="item-slot-amount"><p>' +
                     itemData.amount +
-                    '</div><div class="item-slot-name1"><p>' +
-                    " £" +
+                    '</div><div class="item-slot-name"><p>' +
+                    " $" +
                     itemData.price +
                     '</p></div><div class="item-slot-label"><p>' +
                     itemData.label +
@@ -1460,11 +1428,11 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                             "</p></div>" +
                             ItemLabel
                         );
-                } else if ($toSlot == 41 && $toInv.attr("data-inventory") == "player") {
+                } else if ($toSlot == 43 && $toInv.attr("data-inventory") == "player") {
                     $toInv
                         .find("[data-slot=" + $toSlot + "]")
                         .html(
-                            '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                            '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                             newData.image +
                             '" alt="' +
                             newData.name +
@@ -1585,11 +1553,11 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                             "</p></div>" +
                             ItemLabel
                         );
-                } else if ($toSlot == 41 && $toInv.attr("data-inventory") == "player") {
+                } else if ($toSlot == 43 && $toInv.attr("data-inventory") == "player") {
                     $toInv
                         .find("[data-slot=" + $toSlot + "]")
                         .html(
-                            '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                            '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                             newData.image +
                             '" alt="' +
                             newData.name +
@@ -1672,8 +1640,8 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                             newDataFrom.name +
                             '" /></div><div class="item-slot-amount"><p>' +
                             newDataFrom.amount +
-                            '</div><div class="item-slot-name1"><p>' +
-                            " £" +
+                            '</div><div class="item-slot-name"><p>' +
+                            " $" +
                             newDataFrom.price +
                             '</p></div><div class="item-slot-label"><p>' +
                             newDataFrom.label +
@@ -1714,13 +1682,13 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                                 ItemLabel
                             );
                     } else if (
-                        $fromSlot == 41 &&
+                        $fromSlot == 43 &&
                         $fromInv.attr("data-inventory") == "player"
                     ) {
                         $fromInv
                             .find("[data-slot=" + $fromSlot + "]")
                             .html(
-                                '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                                '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                                 newDataFrom.image +
                                 '" alt="' +
                                 newDataFrom.name +
@@ -1872,11 +1840,11 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                             "</p></div>" +
                             ItemLabel
                         );
-                } else if ($toSlot == 41 && $toInv.attr("data-inventory") == "player") {
+                } else if ($toSlot == 43 && $toInv.attr("data-inventory") == "player") {
                     $toInv
                         .find("[data-slot=" + $toSlot + "]")
                         .html(
-                            '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                            '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                             fromData.image +
                             '" alt="' +
                             fromData.name +
@@ -1982,13 +1950,13 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                                 ItemLabel
                             );
                     } else if (
-                        $fromSlot == 41 &&
+                        $fromSlot == 43 &&
                         $fromInv.attr("data-inventory") == "player"
                     ) {
                         $fromInv
                             .find("[data-slot=" + $fromSlot + "]")
                             .html(
-                                '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                                '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                                 toData.image +
                                 '" alt="' +
                                 toData.name +
@@ -2081,13 +2049,13 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                                 '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div>'
                             );
                     } else if (
-                        $fromSlot == 41 &&
+                        $fromSlot == 43 &&
                         $fromInv.attr("data-inventory") == "player"
                     ) {
                         $fromInv
                             .find("[data-slot=" + $fromSlot + "]")
                             .html(
-                                '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div>'
+                                '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div>'
                             );
                     } else {
                         $fromInv
@@ -2160,11 +2128,11 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                             "</p></div>" +
                             ItemLabel
                         );
-                } else if ($toSlot == 50 && $toInv.attr("data-inventory") == "player") {
+                } else if ($toSlot == 43 && $toInv.attr("data-inventory") == "player") {
                     $toInv
                         .find("[data-slot=" + $toSlot + "]")
                         .html(
-                            '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                            '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                             newDataTo.image +
                             '" alt="' +
                             newDataTo.name +
@@ -2263,8 +2231,8 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                             newDataFrom.name +
                             '" /></div><div class="item-slot-amount"><p>' +
                             newDataFrom.amount +
-                            '</div><div class="item-slot-name1"><p>' +
-                            " £" +
+                            '</div><div class="item-slot-name"><p>' +
+                            " $" +
                             newDataFrom.price +
                             '</p></div><div class="item-slot-label"><p>' +
                             newDataFrom.label +
@@ -2305,13 +2273,13 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
                                 ItemLabel
                             );
                     } else if (
-                        $fromSlot == 41 &&
+                        $fromSlot == 43 &&
                         $fromInv.attr("data-inventory") == "player"
                     ) {
                         $fromInv
                             .find("[data-slot=" + $fromSlot + "]")
                             .html(
-                                '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                                '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                                 newDataFrom.image +
                                 '" alt="' +
                                 newDataFrom.name +
@@ -2432,7 +2400,7 @@ var requiredItemOpen = false;
 
     Inventory.slots = 40;
 
-    Inventory.dropslots = 30;
+    Inventory.dropslots = 32;
     Inventory.droplabel = "Ground";
     Inventory.dropmaxweight = 100000;
 
@@ -2551,11 +2519,12 @@ var requiredItemOpen = false;
     Inventory.Open = function(data) {
         totalWeight = 0;
         totalWeightOther = 0;
+        var skullcolor = "#F86969";
     
         $(".player-inv-label").html('Player');
         $(".player-inventory").find(".item-slot").remove();
         $(".ply-hotbar-inventory").find(".item-slot").remove();
-        $(".ply-iteminfo-container").css("display", "none");
+        $(".ply-iteminfo-container").css("opacity", "0.0");
         
         $(".player-name-title").html('Name');
         $(".player-name").html(data.pName);
@@ -2566,11 +2535,13 @@ var requiredItemOpen = false;
         $(".citizen-id-title").html('Citizen ID');
         $(".citizen-id").html(data.pCID);
 
-        $(".skull-damage").html('Stress : ');
-        $(".skull-damage-title").html(data.pStress + "%");
+        $(".skull-damage-title").html(data.pStress);
 
-        $(".body-damage").html('Damage : ');
         $(".body-damage-title").html(data.pDamage + "%");
+        $(".skull-damage-line").css({
+            width: data.pDamage + "px",
+            "background-color": skullcolor,
+        });
     
         if (requiredItemOpen) {
             $(".requiredItem-container").hide();
@@ -2583,62 +2554,85 @@ var requiredItemOpen = false;
         } else {
             $(".other-inventory").attr("data-inventory", 0);
         }
-        for (i = 1; i < 6; i++) {
-            $(".player-inventory").append('<div class="item-slot" data-slot="' + i + '"><div class="item-slot-key"><p>' + i + '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>');
+
+        for (i = 1; i < 7; i++) {
+            $(".player-inventory").append(
+                '<div class="item-slot" data-slot="' +
+                i +
+                '"><div class="item-slot-key"><p>' +
+                i +
+                '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
         }
-        for (i = 6; i < data.slots + 1; i++) {
-            if (i == 41) {
-                $(".player-inventory").append('<div class="item-slot" data-slot="' + i + '"><div class="item-slot-key"><p>6</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>');
+
+        var firstSlots = $(".player-inventory-first");
+        for (i = 111; i < 116; i++) {
+            firstSlots.append(
+                '<div class="item-slot" data-slot="' +
+                i +
+                '"><div class="item-slot-key"><p>' +
+                i +
+                '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
+        }
+        $(".player-inventory").append(firstSlots);
+
+        var secondSlots = $(".player-inventory-second");
+        for (i = 42; i < 47; i++) {
+            secondSlots.append(
+                '<div class="item-slot" data-slot="' +
+                i +
+                '"><div class="item-slot-key"><p>' +
+                i +
+                '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
+        }
+        $(".player-inventory").append(secondSlots);
+
+        var backpackSlots = $(".player-inventory-backpack");
+        for (i = 158; i < 188; i++) {
+            backpackSlots.append(
+                '<div class="item-slot" data-slot="' +
+                    i +
+                    '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+                );
+        }
+        $(".player-inventory").append(backpackSlots);
+    
+        var remainingSlots = $(".player-inventory");
+        for (i = 7; i < data.slots + 1; i++) {
+            if (i == 43) {
+                remainingSlots.append(
+                    '<div class="item-slot" data-slot="' +
+                    i +
+                    '"><div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+                );
             } else {
-                $(".player-inventory").append('<div class="item-slot" data-slot="' + i + '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>');
+                remainingSlots.append(
+                    '<div class="item-slot" data-slot="' +
+                    i +
+                    '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+                );
             }
         }
-
-        // var firstSlots = $(".player-inventory-first");
-        // for (i = 1; i < 6; i++) {
-        //     firstSlots.append(
-        //         '<div class="item-slot" data-slot="' +
-        //         i +
-        //         '"><div class="item-slot-key"><p>' +
-        //         i +
-        //         '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-        //     );
-        // }
-        // $(".player-inventory").append(firstSlots);
-
-        // var secondSlots = $(".player-inventory-second");
-        // for (i = 42; i < 47; i++) {
-        //     secondSlots.append(
-        //         '<div class="item-slot" data-slot="' +
-        //         i +
-        //         '"><div class="item-slot-key"><p>' +
-        //         i +
-        //         '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-        //     );
-        // }
-        // $(".player-inventory").append(secondSlots);
-
-        // var backpackSlots = $(".player-inventory-backpack");
-        // for (i = 141; i < 176; i++) {
-        //     backpackSlots.append(
-        //         '<div class="item-slot" data-slot="' +
-        //             i +
-        //             '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-        //         );
-        //     }
-        // $(".player-inventory").append(backpackSlots);
-    
+        $(".player-inventory").append(remainingSlots);
+        
         if (data.other != null && data.other != "") {
             for (i = 1; i < data.other.slots + 1; i++) {
-                $(".other-inventory").append('<div class="item-slot" data-slot="' + i + '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>');
+                $(".other-inventory").append(
+                    '<div class="item-slot" data-slot="' +
+                    i +
+                    '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+                );
             }
         } else {
             for (i = 1; i < Inventory.dropslots + 1; i++) {
-                $(".other-inventory").append('<div class="item-slot" data-slot="' + i + '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>');
+                $(".other-inventory").append(
+                    '<div class="item-slot" data-slot="' +
+                    i +
+                    '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+                );
             }
-            $(".other-inventory .item-slot").css({
-                "background-color": "rgba(0, 0, 0, 0.3)",
-            });
         }
 
         if (data.inventory !== null) {
@@ -2679,14 +2673,14 @@ var requiredItemOpen = false;
                         $(".player-inventory")
                             .find("[data-slot=" + item.slot + "]")
                             .data("item", item);
-                    } else if (item.slot == 41) {
+                    } else if (item.slot == 43) {
                         $(".player-inventory")
                             .find("[data-slot=" + item.slot + "]")
                             .addClass("item-drag");
                         $(".player-inventory")
                             .find("[data-slot=" + item.slot + "]")
                             .html(
-                                '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                                '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                                 item.image +
                                 '" alt="' +
                                 item.name +
@@ -2760,8 +2754,8 @@ var requiredItemOpen = false;
                                 item.name +
                                 '" /></div><div class="item-slot-amount"><p>' +
                                 item.amount +
-                                '</div><div class="item-slot-name1"><p>' +
-                                " £" +
+                                '</div><div class="item-slot-name"><p>' +
+                                " $" +
                                 item.price +
                                 "</p></div>" +
                                 ItemLabel
@@ -2900,41 +2894,52 @@ var requiredItemOpen = false;
         $(".player-inventory").find(".item-slot").remove();
         $(".player-inventory-first").find(".item-slot").remove();
         $(".player-inventory-second").find(".item-slot").remove();
-        // $(".player-inventory-backpack").find(".item-slot").remove();
+        $(".player-inventory-backpack").find(".item-slot").remove();
         $(".ply-hotbar-inventory").find(".item-slot").remove();
         if (data.error) {
             Inventory.Error();
         }
-        // var firstSlots = $(".player-inventory-first");
-        // for (i = 1; i < 6; i++) {
-        //     firstSlots.append(
-        //         '<div class="item-slot" data-slot="' +
-        //         i +
-        //         '"><div class="item-slot-key"><p>' +
-        //         i +
-        //         '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-        //     );
-        // }
-        // $(".player-inventory").append(firstSlots);
+        var firstSlots = $(".player-inventory-first");
+        for (i = 111; i < 116; i++) {
+            firstSlots.append(
+                '<div class="item-slot" data-slot="' +
+                i +
+                '"><div class="item-slot-key"><p>' +
+                i +
+                '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
+        }
+        $(".player-inventory").append(firstSlots);
+    
+        var secondSlots = $(".player-inventory-second");
+        for (i = 42; i < 47; i++) {
+            secondSlots.append(
+                '<div class="item-slot" data-slot="' +
+                i +
+                '"><div class="item-slot-key"><p>' +
+                i +
+                '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
+        }
+        $(".player-inventory").append(secondSlots);
 
-
-        // var backpackSlots = $(".player-inventory-backpack");
-        // for (i = 159; i < 176; i++) {
-        //     backpackSlots.append(
-        //         '<div class="item-slot" data-slot="' +
-        //             i +
-        //             '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-        //         );
-        // }
-        // $(".player-inventory").append(backpackSlots);
+        var backpackSlots = $(".player-inventory-backpack");
+        for (i = 158; i < 188; i++) {
+            backpackSlots.append(
+                '<div class="item-slot" data-slot="' +
+                    i +
+                    '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+                );
+        }
+        $(".player-inventory").append(backpackSlots);
 
         var remainingSlots = $(".player-inventory");
-        for (i = 6; i < data.slots + 1; i++) {
-            if (i == 42) {
+        for (i = 7; i < data.slots + 1; i++) {
+            if (i == 43) {
                 remainingSlots.append(
                     '<div class="item-slot" data-slot="' +
                     i +
-                    '"><div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+                    '"><div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
                 );
             } else {
                 remainingSlots.append(
@@ -2974,14 +2979,14 @@ var requiredItemOpen = false;
                     $(".player-inventory")
                         .find("[data-slot=" + item.slot + "]")
                         .data("item", item);
-                } else if (item.slot == 41) {
+                } else if (item.slot == 43) {
                     $(".player-inventory")
                         .find("[data-slot=" + item.slot + "]")
                         .addClass("item-drag");
                     $(".player-inventory")
                         .find("[data-slot=" + item.slot + "]")
                         .html(
-                            '<div class="item-slot-key"><p>6 <i class=""></i></p></div><div class="item-slot-img"><img src="images/' +
+                            '<div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"><img src="images/' +
                             item.image +
                             '" alt="' +
                             item.name +
@@ -3051,7 +3056,7 @@ var requiredItemOpen = false;
                 $(".z-hotbar-inventory").append(elem);
             }
             // var elem =
-            //     '<div class="z-hotbar-item-slot" data-zhotbarslot="43"> <div class="z-hotbar-item-slot-key"><p>6 <i style="top: -62px; left: 58px;" class=""></i></p></div><div class="z-hotbar-item-slot-img"></div><div class="z-hotbar-item-slot-label"><p>&nbsp;</p></div></div>';
+            //     '<div class="z-hotbar-item-slot" data-zhotbarslot="43"> <div class="z-hotbar-item-slot-key"><p>6 <i style="top: -62px; left: 58px;" class="fas fa-lock"></i></p></div><div class="z-hotbar-item-slot-img"></div><div class="z-hotbar-item-slot-label"><p>&nbsp;</p></div></div>';
             // $(".z-hotbar-inventory").append(elem);
             $.each(data.items, function(i, item) {
                 if (item != null) {
@@ -3065,11 +3070,11 @@ var requiredItemOpen = false;
                                 "</p></div>";
                         // }
                     // }
-                    if (item.slot == 41) {
+                    if (item.slot == 43) {
                         $(".z-hotbar-inventory")
                             .find("[data-zhotbarslot=" + item.slot + "]")
                             .html(
-                                '<div class="z-hotbar-item-slot-key"><p>6 <i style="top: -62px; left: 58px;" class=""></i></p></div><div class="z-hotbar-item-slot-img"><img src="images/' +
+                                '<div class="z-hotbar-item-slot-key"><p>6 <i style="top: -62px; left: 58px;" class="fas fa-lock"></i></p></div><div class="z-hotbar-item-slot-img"><img src="images/' +
                                 item.image +
                                 '" alt="' +
                                 item.name +
@@ -3114,7 +3119,7 @@ var requiredItemOpen = false;
     Inventory.UseItem = function(data) {
         $(".itembox-container").hide();
         $(".itembox-container").fadeIn(250);
-        $("#itembox-action").html("<p>Used</p>");
+        $("#itembox-action").html("<p>Equip</p>");
         $("#itembox-label").html("<p>" + data.item.label + "</p>");
         $("#itembox-image").html(
             '<div class="item-slot-img"><img src="images/' +
@@ -3136,7 +3141,7 @@ var requiredItemOpen = false;
             clearTimeout(itemBoxtimer);
         }
     
-        var type = "Used " + data.itemAmount;
+        var type = "Equip " + data.itemAmount + "x";
         if (data.type == "add") {
             type = "Received " + data.itemAmount;
         } else if (data.type == "remove") {
