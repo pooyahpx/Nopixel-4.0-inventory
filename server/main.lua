@@ -1,5 +1,5 @@
--- Variables
---------------------------DEV BY POYAHPX-----------------------
+-- DEV BY POOYA HPX --
+
 local QBCore = exports['qb-core']:GetCoreObject()
 local Drops = {}
 local Trunks = {}
@@ -908,7 +908,7 @@ local function AddToDrop(dropId, slot, itemName, amount, info, created)
 		}
 	end
 
-	-- OnDropUpdate(dropId, Drops[dropId])
+	OnDropUpdate(dropId, Drops[dropId])
 end
 
 
@@ -928,7 +928,7 @@ local function RemoveFromDrop(dropId, slot, itemName, amount)
 		end
 	end
 	
-	-- OnDropUpdate(dropId, Drops[dropId])
+	OnDropUpdate(dropId, Drops[dropId])
 end
 
 local function CreateDropId()
@@ -988,7 +988,7 @@ local function CreateNewDrop(source, fromSlot, toSlot, itemAmount, created)
 		end
 
 		
-		-- OnDropUpdate(dropId, Drops[dropId])
+		OnDropUpdate(dropId, Drops[dropId])
 	else
 		TriggerClientEvent("QBCore:Notify", source, "You don't have this item!", "error")
 		return
@@ -1165,9 +1165,9 @@ local function OpenInventory(name, id, other, origin)
 				secondInv.maxweight = Config.MaxInventoryWeight
 				secondInv.inventory = OtherPlayer.PlayerData.items
 				if (Player.PlayerData.job.name == "police" or Player.PlayerData.job.type == "leo") and Player.PlayerData.job.onduty then
-					secondInv.slots = Config.MaxInventorySlots
+					secondInv.slots = Config.MaxInventorySlots + 150
 				else
-					secondInv.slots = Config.MaxInventorySlots - 1
+					secondInv.slots = Config.MaxInventorySlots + 150
 				end
 				Wait(250)
 			end
@@ -1345,11 +1345,11 @@ RegisterNetEvent('inventory:server:CraftAttachment', function(itemName, itemCost
 	if not itemName or not itemCosts then return end
 
 	for k, v in pairs(itemCosts) do
-		RemoveItem(src, k, (v * amount))
+		RemoveItem(src, k, (v*amount))
 	end
 	AddItem(src, itemName, amount, toSlot)
-	Player.Functions.SetMetaData('attachmentcraftingrep', Player.PlayerData.metadata['attachmentcraftingrep'] + (points * amount))
-	TriggerClientEvent('inventory:client:UpdatePlayerInventory', src, false)
+	Player.Functions.SetMetaData("attachmentcraftingrep", Player.PlayerData.metadata["attachmentcraftingrep"] + (points * amount))
+	TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, false)
 end)
 
 RegisterNetEvent('inventory:server:SetIsOpenState', function(IsOpen, type, id)
@@ -1529,19 +1529,19 @@ RegisterNetEvent('inventory:server:OpenInventory', function(name, id, other)
 				secondInv.inventory = other.items
 				secondInv.slots = #other.items
 			elseif name == "otherplayer" then
-				local OtherPlayer = QBCore.Functions.GetPlayer(tonumber(id))
-				if OtherPlayer then
-					secondInv.name = "otherplayer-"..id
-					secondInv.label = "Player-"..id
-					secondInv.maxweight = Config.MaxInventoryWeight
-					secondInv.inventory = OtherPlayer.PlayerData.items
-					if (Player.PlayerData.job.name == "police" or Player.PlayerData.job.type == "leo") and Player.PlayerData.job.onduty then
-						secondInv.slots = Config.MaxInventorySlots
-					else
-						secondInv.slots = Config.MaxInventorySlots - 1
-					end
-					Wait(250)
-				end
+                local OtherPlayer = QBCore.Functions.GetPlayer(tonumber(id))
+                if OtherPlayer then
+                    secondInv.name = "otherplayer-"..id
+                    secondInv.label = "Player-"..id
+                    secondInv.maxweight = Config.MaxInventoryWeight
+                    secondInv.inventory = OtherPlayer.PlayerData.items
+                    if (Player.PlayerData.job.name == "police" or Player.PlayerData.job.type == "leo") and Player.PlayerData.job.onduty then
+                        secondInv.slots = Config.MaxInventorySlots + 150
+                    else
+                        secondInv.slots = Config.MaxInventorySlots + 150
+                    end
+                    Wait(250)
+                end
 			else
 				if Drops[id] then
 					if Drops[id].isOpen then
@@ -2144,7 +2144,7 @@ RegisterNetEvent('inventory:server:SetInventoryData', function(fromInventory, to
                 AddItem(src, itemData.name, fromAmount, toSlot, itemData.info)
                 TriggerClientEvent('qb-shops:client:UpdateShop', src, QBCore.Shared.SplitStr(shopType, "_")[2], itemData, fromAmount)
                 QBCore.Functions.Notify(src, itemInfo["label"] .. " bought!", "success")
-                -- exports['ps-mdt']:CreateWeaponInfo(serial, imageurl, notes, owner, weapClass, weapModel)
+                exports['ps-mdt']:CreateWeaponInfo(serial, imageurl, notes, owner, weapClass, weapModel)
                 TriggerEvent("qb-log:server:CreateLog", "shops", "Shop item bought", "green", "**"..GetPlayerName(src) .. "** bought a " .. itemInfo["label"] .. " for $"..price)
         elseif bankBalance >= price then
                 Player.Functions.RemoveMoney("bank", price, "itemshop-bought-item")
@@ -2161,7 +2161,7 @@ RegisterNetEvent('inventory:server:SetInventoryData', function(fromInventory, to
                 AddItem(src, itemData.name, fromAmount, toSlot, itemData.info)
                 TriggerClientEvent('qb-shops:client:UpdateShop', src, QBCore.Shared.SplitStr(shopType, "_")[2], itemData, fromAmount)
                 QBCore.Functions.Notify(src, itemInfo["label"] .. " bought!", "success")
-				-- exports['ps-mdt']:CreateWeaponInfo(serial, imageurl, notes, owner, weapClass, weapModel)
+				exports['ps-mdt']:CreateWeaponInfo(serial, imageurl, notes, owner, weapClass, weapModel)
                 TriggerEvent("qb-log:server:CreateLog", "shops", "Shop item bought", "green", "**"..GetPlayerName(src) .. "** bought a " .. itemInfo["label"] .. " for $"..price)
             else
                 QBCore.Functions.Notify(src, "You don't have enough cash..", "error")
@@ -2547,6 +2547,10 @@ end)
 
 -- Decay System
 
+------DEV BY POOYA HPX
+
+--HP
+
 local TimeAllowed = 60 * 60 * 24 * 1 -- Maths for 1 day dont touch its very important and could break everything
 function ConvertQuality(item)
 	local StartDate = item.created
@@ -2720,3 +2724,5 @@ end)
 RegisterNetEvent('inventory:server:addGloveboxItems', function()
 	print('inventory:server:addGloveboxItems has been deprecated please use exports[\'qb-inventory\']:addGloveboxItems(plate, items)')
 end)
+
+--DEV BY POOYA HPX
