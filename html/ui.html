@@ -25,8 +25,8 @@
       <div id="qbcore-inventory">
             <div class="inventory-info">
               <!-- Personal Information-->
+              <div class="inventory-name4"> <span class="inventory-name5">Personal Information</span></div>
               <div class="player-name-title"> <span class="name-info-title">Name : </span></div>
-              <!-- <div class="icon"><i class="fa-solid fa-user"></i></div> -->
               <div class="player-name"> <span class="name-info">Player-Name</span></div>
               <div class="phone-number-title"> <span class="phone-number-info">Phone Number : </span></div>
               <div class="phone-number"> <span class="phone-number">Player-Phone-Number</span></div>
@@ -38,51 +38,31 @@
               <div class="phone-number-line"></div>
               <div class="player-id-line"></div>
               <div class="citizen-id-line"></div>
-              <div class="circle"></div>
-              <div class="persona-information-baen">Personal Information</div>
-
               <!-- Inventory Icons & Labels-->
-                <!-- <div class="icon"><i class="fa-solid fa-user"></i></div> -->
-              
-              <!-- <div class="player-inventory-icon"><i class="fas fa-user"></i></div>
-              <div class="other-inventory-icon"><i class="fas fa-earth-americas"></i></div>
-              <div class="pocket-inventory-icon"><i class="fa-solid fa-person"></i></div> -->
-              <div class="inventory-info">
-                <div class="player-inventory-icon">
-                  <img src="./inventory_images/backpack.png" alt ="">
-                </div>
-                  <div class="other-inventory-icon">
-                    <img src="./inventory_images/drop.png" alt ="">
-                  </div>
-                    <div class="pocket-inventory-icon">
-                      <img src="./inventory_images/body2.png" alt ="">
-                    </div>
-              </div>
-              <!-- <div class="backpack-inventory-icon"><i class="fas fa-backpack"></i></div> -->
-               <span id="pocket-inv-label" class="pocket-inv-label">Body</span>
-               <!-- <span id="backpack-inv-label" class="backpack-inv-label">Backpack</span> -->
-
+              <div class="player-inventory-icon"></div>
+              <div class="other-inventory-icon"></div>
+              <div class="pocket-inventory-icon"></div>
+              <div class="backpack-inventory-icon"><i class="fas fa-backpack" style="font-size: 0.80em;margin-top: 5px;"></i></div>
+               <span id="pocket-inv-label" class="pocket-inv-label">Pockets</span>
+               <span id="backpack-inv-label" class="backpack-inv-label">Backpack</span>
+               <div class="inventory-skeletonmrtvi2"></div>
                 <!-- Player Body Image -->
             <div class="player-body-container">
               <div class="player-body">
-                  <img src="./inventory_images/body.png" alt="player-body" style="width:198px;height:428px;">
-                </div>
+                  <img src="./inventory_images/body.png" alt="player-body" style="width:250px;height:530px;">
               </div>
+            </div>
 
                 <!-- Player Damage-->
                 <div class="skull-damage-container">
-                <div class="skull-damage"></div>
-                <div class="skull-damage-title"></div>
                 <div class="skull-damage-line"></div>
                 </div>
                 
                 <div class="body-damage-container">
-                <div class="body-damage"></div>
-                <div class="body-damage-title"></div>
                 <div class="body-damage-line"></div>
             </div>
 
-                <!-- Default ps-inventory -->
+                <!-- Default qb-inventory -->
                 <div class="player-inv-info">
                     <span id="player-inv-label" class="player-inv-label">Player</span><br>
                     <div></div>
@@ -97,9 +77,9 @@
                 <div class="ply-inv-container">
                     <div class="player-inventory-bg">
                     <div class="player-inventory" data-inventory="player"></div>
-                    <!-- <div class="player-inventory-first" data-inventory="player"></div>
-                    <div class="player-inventory-second" data-inventory="player"></div> -->
-                    <!-- <div class="player-inventory-backpack" data-inventory="player"></div> -->
+                    <div class="player-inventory-first" data-inventory="player"></div>
+                    <div class="player-inventory-second" data-inventory="player"></div>
+                    <div class="player-inventory-backpack" data-inventory="player"></div>
                 </div>
             <!-- Inventory Options & Item Information Merged Together -->
                 <div class="ply-iteminfo-container">
@@ -110,20 +90,14 @@
                          <div class="item-info-description"></div>
                        </div>
                       </div> 
-                      <span class="item-use-icon"></span>
-                      <!-- <button class="inv-option-item" id="item-use"><p>Use</p></button> 
-                      <button class="inv-option-item" id="item-give"><p>Give</p></button> -->
-                      <button id="item-use" class="item-shit-option"><i class="fa-solid fa-angles-right"></i> Use</button>
-                      <button id="item-give" class="item-shit-option"><i class="fa-solid fa-hand-holding-hand"></i> Give</button>
-                  
-                      <!-- <button class="inv-option-item" id="item-split"><p>Split</p></button> -->
-                      <button id="item-split" class="item-shit-option"><i class="fa-solid fa-cut"></i> Split</button>
-                                            <br>
+                      <button class="inv-option-item" id="item-use"><p>Use</p></button> 
+                      <button class="inv-option-item" id="item-give"><p>Give</p></button>
+                      <br>
                       <input type="text" id="item-amount-text" placeholder="0" />
                       <input type="range" id="item-amount" class="iteminfo-content" min="0" max="999" value="0" oninput="updateTextInput(this.value);" />
-                      <!-- <button class="inv-option-item" id="weapon-attachments"><p>Attachments</p></button> -->
+                      <button class="inv-option-item" id="item-split"><p>Split</p></button>
                     </div>
-                    <!-- Default ps-inventory -->
+                    <!-- Default qb-inventory -->
                 <div class="oth-inv-container">
                     <div class="other-inventory-bg">
                     <div class="other-inventory" data-inventory="other">
