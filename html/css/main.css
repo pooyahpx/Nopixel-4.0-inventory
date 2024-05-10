@@ -11,9 +11,52 @@ p { margin: 0 !important; }
 .text-h6 { color: #fff; }
 .q-card__section.q-card__section--vert.q-pt-none { color: #fff; }
 
-@media screen and (min-width: 2540px) {
-    #itembox-label {
-        min-height: 1.8vh;
+/* 4K Screens */
+@media screen and (width: 3840px) and (height: 2160px) {
+    html {
+        font-size: 21.5px;
+    }
+}
+
+/* 2K Screens */
+@media screen and (width: 2560px) and (height: 1440px) {
+    html {
+        font-size: 18px;
+    }
+}
+
+/* Example for Full HD (1080p) */
+@media screen and (width: 1920px) and (height: 1080px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+/* Another example resolution */
+@media screen and (width: 1600px) and (height: 1200px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+/* Lower resolution example */
+@media screen and (width: 1440px) and (height: 900px) {
+    html {
+        font-size: 12px;
+    }
+}
+
+/* Another lower resolution example */
+@media screen and (width: 1366px) and (height: 768px) {
+    html {
+        font-size: 11px;
+    }
+}
+
+/* Smallest example resolution */
+@media screen and (width: 1024px) and (height: 768px) {
+    html {
+        font-size: 10px;
     }
 }
 
