@@ -11,10 +11,38 @@ p { margin: 0 !important; }
 .text-h6 { color: #fff; }
 .q-card__section.q-card__section--vert.q-pt-none { color: #fff; }
 
+/* 8K Screens */
+@media screen and (width: 7680px) and (height: 4320px) {
+    html {
+        font-size: 30px;
+    }
+}
+
+/* 5K Screens */
+@media screen and (width: 5120px) and (height: 2880px) {
+    html {
+        font-size: 24px;
+    }
+}
+
 /* 4K Screens */
 @media screen and (width: 3840px) and (height: 2160px) {
     html {
         font-size: 21.5px;
+    }
+}
+
+/* 3K Screens */
+@media screen and (width: 3200px) and (height: 1800px) {
+    html {
+        font-size: 20px;
+    }
+}
+
+/* QHD (2560x1600) */
+@media screen and (width: 2560px) and (height: 1600px) {
+    html {
+        font-size: 18.5px;
     }
 }
 
@@ -25,38 +53,101 @@ p { margin: 0 !important; }
     }
 }
 
-/* Example for Full HD (1080p) */
+/* WUXGA (1920x1200) */
+@media screen and (width: 1920px) and (height: 1200px) {
+    html {
+        font-size: 17px;
+    }
+}
+
+/* Full HD (1080p) */
 @media screen and (width: 1920px) and (height: 1080px) {
     html {
         font-size: 16px;
     }
 }
 
-/* Another example resolution */
+/* UXGA (1600x1200) */
 @media screen and (width: 1600px) and (height: 1200px) {
     html {
         font-size: 14px;
     }
 }
 
-/* Lower resolution example */
+/* WSXGA+ (1680x1050) */
+@media screen and (width: 1680px) and (height: 1050px) {
+    html {
+        font-size: 13px;
+    }
+}
+
+/* WXGA+ (1440x900) */
 @media screen and (width: 1440px) and (height: 900px) {
     html {
         font-size: 12px;
     }
 }
 
-/* Another lower resolution example */
+/* HD+ (1600x900) */
+@media screen and (width: 1600px) and (height: 900px) {
+    html {
+        font-size: 12.5px;
+    }
+}
+
+/* HD (1366x768) */
 @media screen and (width: 1366px) and (height: 768px) {
     html {
         font-size: 11px;
     }
 }
 
-/* Smallest example resolution */
+/* WXGA (1280x800) */
+@media screen and (width: 1280px) and (height: 800px) {
+    html {
+        font-size: 10.5px;
+    }
+}
+
+/* XGA (1024x768) */
 @media screen and (width: 1024px) and (height: 768px) {
     html {
         font-size: 10px;
+    }
+}
+
+/* SVGA (800x600) */
+@media screen and (width: 800px) and (height: 600px) {
+    html {
+        font-size: 9px;
+    }
+}
+
+/* VGA (640x480) */
+@media screen and (width: 640px) and (height: 480px) {
+    html {
+        font-size: 8px;
+    }
+}
+
+/* HVGA (480x320) */
+@media screen and (width: 480px) and (height: 320px) {
+    html {
+        font-size: 7px;
+    }
+}
+
+/* QVGA (320x240) */
+@media screen and (width: 320px) and (height: 240px) {
+    html {
+        font-size: 6px;
+    }
+}
+
+/* QQVGA (160x120) */
+@media screen and (width: 160px) and (height: 120px) {
+    html {
+        font-size: 5px;
     }
 }
 
