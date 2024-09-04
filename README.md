@@ -1,4 +1,9 @@
-NEW UPDATE 
+# VERSION 2 COMING SOON ...
+
+![Screenshot (441)](https://github.com/user-attachments/assets/079b8f6b-234a-4fb6-8a0c-09efd2b8e751)
+
+
+NEW UPDATE V1
 
 YOU CAN DOWNLOAD AND ENJOY
 
@@ -37,7 +42,7 @@ IF YOU NEED MORE HELP TEXT ME ON DISCORD poya3724
 
 # OLD VERSION
 
-
+V.BETA
 
 **********
  
