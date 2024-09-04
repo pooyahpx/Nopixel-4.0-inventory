@@ -4,7 +4,7 @@
 
 ![Screenshot (442)](https://github.com/user-attachments/assets/9a3c786c-b761-4f7e-8251-1ec39867117d)
 
-NEW UPDATE V1
+# UPDATE V1
 
 YOU CAN DOWNLOAD AND ENJOY
 
@@ -41,9 +41,7 @@ if ur last inventory was another inventory you should open ur all resourcs folde
 
 IF YOU NEED MORE HELP TEXT ME ON DISCORD poya3724
 
-# OLD VERSION
-
-V.BETA
+# V.BETA
 
 **********
  
