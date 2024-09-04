@@ -2,6 +2,7 @@
 
 ![Screenshot (441)](https://github.com/user-attachments/assets/079b8f6b-234a-4fb6-8a0c-09efd2b8e751)
 
+![Screenshot (442)](https://github.com/user-attachments/assets/9a3c786c-b761-4f7e-8251-1ec39867117d)
 
 NEW UPDATE V1
 
