@@ -4,9 +4,15 @@
 
 ![Screenshot (442)](https://github.com/user-attachments/assets/9a3c786c-b761-4f7e-8251-1ec39867117d)
 
-# UPDATE V1
+# UPDATE V1.5 is ready you can download and enjoy
 
-YOU CAN DOWNLOAD AND ENJOY
+![Screenshot (439)](https://github.com/user-attachments/assets/c8cc8f3a-141c-46ae-bdb6-188e230899ed)
+
+
+![Screenshot (440)](https://github.com/user-attachments/assets/117b4930-5115-461e-a41b-70711c7fce1d)
+
+
+# UPDATE V1
 
 **********
  
