@@ -1,4 +1,10 @@
-# VERSION 2 COMING SOON ...
+# VERSION 2 IS READY
+for more imformation send dm in disscord 
+
+# poya3724
+
+
+# VERSION 2
 
 ![Screenshot (441)](https://github.com/user-attachments/assets/079b8f6b-234a-4fb6-8a0c-09efd2b8e751)
 
