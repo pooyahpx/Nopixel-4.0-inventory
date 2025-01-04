@@ -1,7 +1,6 @@
 # VERSION 2 IS READY
 for more imformation send dm in disscord 
-
-# poya3724
+poya3724
 
 
 # VERSION 2
@@ -64,6 +63,8 @@ IF YOU NEED MORE HELP TEXT ME ON DISCORD poya3724
 ![Screenshot (220)](https://github.com/pooyahpx/Nopixel-4.0-inventory/assets/73234330/d161a0d6-652d-4180-9aab-018c21f04ae8)
 
 *************
+![Downloads](https://img.shields.io/badge/Downloads-0-brightgreen)
+
 
 ![Screenshot (222)](https://github.com/pooyahpx/Nopixel-4.0-inventory/assets/73234330/fb50d7d7-a8cd-44f7-8c53-11777e2a22f7)
 
