@@ -980,12 +980,16 @@ local function CreateNewDrop(source, fromSlot, toSlot, itemAmount, created)
 			slot = toSlot,
 			id = dropId,
 		}
-		TriggerEvent("qb-log:server:CreateLog", "drop", "New Item Drop", "red", "**".. GetPlayerName(source) .. "** (citizenid: *"..Player.PlayerData.citizenid.."* | id: *"..source.."*) dropped new item; name: **"..itemData.name.."**, amount: **" .. itemAmount .. "**")
-		TriggerClientEvent("inventory:client:DropItemAnim", source)
-		TriggerClientEvent("inventory:client:AddDropItem", -1, dropId, source, coords)
-		if itemData.name:lower() == "radio" then
-			TriggerClientEvent('Radio.Set', source, false)
-		end
+		TriggerEvent("qb-log:server:CreateLog", "drop", "New Item Drop", "red", 
+    "**".. GetPlayerName(source) .. "** (citizenid: *".. (Player and Player.PlayerData.citizenid or "unknown") .. "* | id: *".. source .. "*) dropped new item; name: **".. (itemData and itemData.name or "unknown") .. "**, amount: **" .. (itemAmount or "unknown") .. "**"
+)
+
+TriggerClientEvent("inventory:client:DropItemAnim", source)
+TriggerClientEvent("inventory:client:AddDropItem", -1, dropId, source, coords)
+
+if itemData and itemData.name and itemData.name:lower() == "radio" then
+    TriggerClientEvent('Radio.Set', source, false)
+end
 
 		
 		OnDropUpdate(dropId, Drops[dropId])
@@ -2573,38 +2577,47 @@ QBCore.Functions.CreateCallback('inventory:server:ConvertQuality', function(sour
     local src = source
     local data = {}
     local Player = QBCore.Functions.GetPlayer(src)
+
+
+    if not Player then
+        print("Error: Player not found for source: " .. tostring(src))
+        return cb(false)
+    end
+
     for _, item in pairs(inventory) do
-        if item.created then
-            if QBCore.Shared.Items[item.name:lower()]["decay"] ~= nil or QBCore.Shared.Items[item.name:lower()]["decay"] ~= 0 then
-                if item.info then
-                    if type(item.info) == "string" then
-                        item.info = {}
-                    end
-                    if item.info.quality == nil then
-                        item.info.quality = 100
-                    end
-                else
-                    local info = {quality = 100}
-                    item.info = info
+   
+        if item and item.created then
+            local itemInfo = QBCore.Shared.Items[item.name:lower()]
+            if itemInfo and (itemInfo.decay ~= nil and itemInfo.decay ~= 0) then
+                if not item.info then
+                    item.info = {quality = 100}
+                elseif type(item.info) == "string" then
+                    item.info = {quality = 100}
+                elseif item.info.quality == nil then
+                    item.info.quality = 100
                 end
+
+        
                 local quality = ConvertQuality(item)
-                if item.info.quality then
-                    if quality < item.info.quality then
-                        item.info.quality = quality
-                    end
+                if item.info.quality and quality < item.info.quality then
+                    item.info.quality = quality
                 else
-                    item.info = {quality = quality}
+                    item.info.quality = quality
                 end
             else
-                if item.info then
-                    item.info.quality = 100
+        
+                if not item.info then
+                    item.info = {quality = 100}
                 else
-                    local info = {quality = 100}
-                    item.info = info
+                    item.info.quality = 100
                 end
             end
         end
     end
+
+
+    cb(data)
+end)
     if other then
 		local inventoryType = QBCore.Shared.SplitStr(other.name, "-")[1]
 		local uniqueId = QBCore.Shared.SplitStr(other.name, "-")[2]
