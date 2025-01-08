@@ -1225,7 +1225,7 @@ AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
 		return GetItemBySlot(Player.PlayerData.source, slot)
-	end)
+	end
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
 		return GetItemByName(Player.PlayerData.source, item)
