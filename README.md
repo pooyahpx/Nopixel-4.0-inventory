@@ -1,4 +1,4 @@
-# VERSION 2 IS READY
+# VERSION 2 IS READY ( It's not free but it's cheap and open source )
 
 ## 🔥 Need More Information?  
 
