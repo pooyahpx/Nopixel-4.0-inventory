@@ -5,7 +5,7 @@ NOPIXEL 4.0 GERPHICS NP BANKING NP SHOP ...
 
 https://github.com/user-attachments/assets/08c62b9f-af1c-43f6-aa26-7e140a127cde
 
-Discord:  
+# Discord for buying:  
 🎮 **`poya3724`**
 
 # VERSION 2 IS READY ( It's not free but it's cheap and open source )
