@@ -1,3 +1,13 @@
+more script of np 4.0 is available
+
+NOPIXEL 4.0 GERPHICS NP BANKING NP SHOP ...
+![98382b6e1bd8ba6ca094e2a0871f531808da4fd2](https://github.com/user-attachments/assets/0b0ec3fa-0cfb-49d6-a2da-98353efcfeb9)
+
+https://github.com/user-attachments/assets/08c62b9f-af1c-43f6-aa26-7e140a127cde
+
+Discord:  
+🎮 **`poya3724`**
+
 # VERSION 2 IS READY ( It's not free but it's cheap and open source )
 
 ## 🔥 Need More Information?  
@@ -7,7 +17,6 @@ For any questions, feedback, or collaboration opportunities, feel free to reach 
 🎮 **`poya3724`**
 
 Don't hesitate—I'm always open to discuss and connect! 🚀
-
 
 # VERSION 2
 
