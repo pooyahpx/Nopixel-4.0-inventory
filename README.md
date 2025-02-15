@@ -27,6 +27,8 @@ Don't hesitate—I'm always open to discuss and connect! 🚀
 # UPDATE V1.5 is ready you can download and enjoy
 
 (send message in discord till recive a free license key )
+this script license is full and i cant give anymore ❤️
+
 
 ![Screenshot (439)](https://github.com/user-attachments/assets/c8cc8f3a-141c-46ae-bdb6-188e230899ed)
 
