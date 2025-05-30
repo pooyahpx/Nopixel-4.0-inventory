@@ -1,3 +1,8 @@
+# NOTE 
+YOU CAN JOIN TO THIS IP IN FIVEM FOR TEST V2
+
+166.88.231.17
+
 more script of np 4.0 is available
 
 NOPIXEL 4.0 GERPHICS NP BANKING NP SHOP ...
