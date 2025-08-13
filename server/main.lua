@@ -2329,15 +2329,15 @@ QBCore.Functions.CreateCallback('inventory:server:GetCurrentDrops', function(_, 
 end)
 
 QBCore.Functions.CreateCallback('QBCore:HasItem', function(source, cb, items, amount)
-	print("^3QBCore:HasItem is deprecated, please use QBCore.Functions.HasItem, it can be used on both server- and client-side and uses the same arguments.^0")
     local retval = false
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return cb(false) end
     local isTable = type(items) == 'table'
     local isArray = isTable and table.type(items) == 'array' or false
-    local totalItems = #items
+    local totalItems = isTable and #items or 1
     local count = 0
     local kvIndex = 2
+
     if isTable and not isArray then
         totalItems = 0
         for _ in pairs(items) do totalItems += 1 end
@@ -2345,18 +2345,19 @@ QBCore.Functions.CreateCallback('QBCore:HasItem', function(source, cb, items, am
     end
     if isTable then
         for k, v in pairs(items) do
-            local itemKV = {k, v}
-            local item = GetItemByName(source, itemKV[kvIndex])
-            if item and ((amount and item.amount >= amount) or (not amount and not isArray and item.amount >= v) or (not amount and isArray)) then
+            local itemName = (kvIndex == 1 and k) or v
+            local requiredAmount = (kvIndex == 1 and v) or amount
+            local has = QBCore.Functions.HasItem(source, itemName, requiredAmount)
+            if has then
                 count += 1
             end
         end
         if count == totalItems then
             retval = true
         end
-    else -- Single item as string
-        local item = GetItemByName(source, items)
-        if item and not amount or (item and amount and item.amount >= amount) then
+    else
+        local has = QBCore.Functions.HasItem(source, items, amount)
+        if has then
             retval = true
         end
     end
