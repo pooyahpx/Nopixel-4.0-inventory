@@ -12,6 +12,7 @@ shared_scripts {
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
 	'server/compat_qb.lua',
+	'server/shop_compat.lua',
 	'server/main.lua',
 	'server/visual.lua',
 }
