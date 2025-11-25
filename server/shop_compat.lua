@@ -57,6 +57,6 @@ exports('OpenShop', function(source, name)
     end
 
     Player(src).state.inv_busy = true
-    TriggerClientEvent('qb-inventory:client:openInventory', src, QBPlayer.PlayerData.items, inv)
+    TriggerClientEvent('inventory:client:OpenInventory', src, {}, QBPlayer.PlayerData.items, inv)
     return true
 end)
