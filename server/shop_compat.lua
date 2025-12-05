@@ -1,4 +1,5 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+-- Use global QBCore from compatibility layer if available, otherwise get it locally
+local QBCore = QBCore or exports['qb-core']:GetCoreObject()
 
 local RegisteredShops = {}
 
@@ -39,7 +40,7 @@ exports('OpenShop', function(source, name)
     end
 
     local inv = {
-        name      = ('shop-%s'):format(shop.name),
+        name      = ('itemshop-%s'):format(shop.name),
         label     = shop.label,
         slots     = shop.slots,
         maxweight = 0,             
@@ -57,6 +58,13 @@ exports('OpenShop', function(source, name)
     end
 
     Player(src).state.inv_busy = true
+    
+    -- Register shop items for purchase handling
+    -- Use the main inventory's ShopItems table via exports
+    if GetResourceState('qb-inventory') == 'started' then
+        exports['qb-inventory']:RegisterShopItems(shop.name, shop.items)
+    end
+    
     TriggerClientEvent('inventory:client:OpenInventory', src, {}, QBPlayer.PlayerData.items, inv)
     return true
 end)
