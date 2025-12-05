@@ -33,18 +33,12 @@ Don't hesitate—I'm always open to discuss and connect! 🚀
 
 ![Screenshot (442)](https://github.com/user-attachments/assets/9a3c786c-b761-4f7e-8251-1ec39867117d)
 
-# UPDATE V1.5 is ready you can download and enjoy
-
-this script license is full and i cant give anymore ❤️
 
 
-![Screenshot (439)](https://github.com/user-attachments/assets/c8cc8f3a-141c-46ae-bdb6-188e230899ed)
 
+# UPDATE V1.6 (LAST FREE UPDATE) FOR NEW QBCORE
 
-![Screenshot (440)](https://github.com/user-attachments/assets/117b4930-5115-461e-a41b-70711c7fce1d)
-
-
-# UPDATE V1
+#EVERYTHING WORK ON NEW QBCORE RIGHT NOW 
 
 **********
  
