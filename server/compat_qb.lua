@@ -1,4 +1,5 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+-- Use global QBCore from compatibility layer if available, otherwise get it locally
+local QBCore = QBCore or exports['qb-core']:GetCoreObject()
 
 RegisterNetEvent('QBCore:Server:AddItem', function(item, amount, slot, info, reason)
     local src = source
