@@ -65,20 +65,37 @@ $(document).on("keydown", function() {
     }
 });
 
+// Variable to track click timing for double-click detection
+var clickTimer = null;
+var clickDelay = 300;
+
 $(document).on("dblclick", ".item-slot", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Clear any pending single click
+    if (clickTimer) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+    }
+    
     var ItemData = $(this).data("item");
     var ItemInventory = $(this).parent().attr("data-inventory");
-    if (ItemData) {
-        Inventory.Close();
-        console.log(ItemInventory); // Check the console for the output
-        console.log(ItemData); // Check the console for the output
-        $.post(
-            "https://qb-inventory/UseItem",
-            JSON.stringify({
-                inventory: ItemInventory,
-                item: ItemData,
-            })
-        );
+    
+    if (ItemData && ItemInventory) {
+        // Check if item is useable or is a weapon
+        if (ItemData.useable || ItemData.type === "weapon") {
+            if (ItemData.shouldClose !== false) {
+                Inventory.Close();
+            }
+            $.post(
+                "https://qb-inventory/UseItem",
+                JSON.stringify({
+                    inventory: ItemInventory,
+                    item: ItemData,
+                })
+            );
+        }
     }
 });
 
@@ -107,7 +124,17 @@ $(document).on("contextmenu", ".item-slot", function(e) {
     if ($(this).data("item") != null) {
         contextMenuSelectedItem = $(this).data("item");
         ItemInventory = $(this).parent().attr("data-inventory");
+        
+        // Show all buttons first
         $('.inv-option-item').css('display', 'block');
+        
+        // Hide Use button if item is not useable
+        if (!contextMenuSelectedItem.useable && contextMenuSelectedItem.type !== "weapon") {
+            $('#item-use').css('display', 'none');
+        } else {
+            $('#item-use').css('display', 'block');
+        }
+        
         $(".ply-iteminfo-container").css("opacity", "1.0");
         $(".ply-iteminfo-container").fadeIn(150);
         $('#item-amount').show();
@@ -162,15 +189,24 @@ $('#item-amount-text').on('keydown', function(e) {
 });
 
 $(document).on("click", "#item-use", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
     if (contextMenuSelectedItem && ItemInventory) {
-        Inventory.Close();
-        $.post(
-            "https://qb-inventory/UseItem",
-            JSON.stringify({
-                inventory: ItemInventory,
-                item: contextMenuSelectedItem,
-            })
-        );
+        // Check if item is useable or is a weapon
+        if (contextMenuSelectedItem.useable || contextMenuSelectedItem.type === "weapon") {
+            if (contextMenuSelectedItem.shouldClose !== false) {
+                Inventory.Close();
+            }
+            $.post(
+                "https://qb-inventory/UseItem",
+                JSON.stringify({
+                    inventory: ItemInventory,
+                    item: contextMenuSelectedItem,
+                })
+            );
+        } else {
+            console.log('Item is not useable');
+        }
     } else {
         console.log('contextMenuSelectedItem or ItemInventory is not set correctly');
     }
@@ -709,9 +745,11 @@ function handleDragDrop() {
         helper: "clone",
         appendTo: "body",
         scroll: true,
-        revertDuration: 0,
+        revertDuration: 200,
         revert: "invalid",
         cancel: ".item-nodrag",
+        cursor: "grabbing",
+        cursorAt: { top: 45, left: 45 },
         start: function(event, ui) {
             IsDragging = true;
             // $(this).css("background", "rgba(20,20,20,1.0)");
@@ -836,10 +874,11 @@ function handleDragDrop() {
 
     $(".item-slot").droppable({
         hoverClass: "item-slot-hoverClass",
+        tolerance: "pointer",
         drop: function(event, ui) {
-            setTimeout(function() {
+            requestAnimationFrame(function() {
                 IsDragging = false;
-            }, 100);
+            });
             fromSlot = ui.draggable.attr("data-slot");
             fromInventory = ui.draggable.parent();
             toSlot = $(this).attr("data-slot");
@@ -884,10 +923,11 @@ function handleDragDrop() {
 
     $("#item-use").droppable({
         hoverClass: "button-hover",
+        tolerance: "pointer",
         drop: function(event, ui) {
-            setTimeout(function() {
+            requestAnimationFrame(function() {
                 IsDragging = false;
-            }, 300);
+            });
             fromData = ui.draggable.data("item");
             fromInventory = ui.draggable.parent().attr("data-inventory");
             if (fromData.useable) {
@@ -907,10 +947,11 @@ function handleDragDrop() {
 
     $("#item-drop").droppable({
         hoverClass: "item-slot-hoverClass",
+        tolerance: "pointer",
         drop: function(event, ui) {
-            setTimeout(function() {
+            requestAnimationFrame(function() {
                 IsDragging = false;
-            }, 300);
+            });
             fromData = ui.draggable.data("item");
             fromInventory = ui.draggable.parent().attr("data-inventory");
             amount = $("#item-amount").val();
@@ -2366,7 +2407,13 @@ function swap($fromSlot, $toSlot, $fromInv, $toInv, $toAmount) {
     } else {
         //InventoryError($fromInv, $fromSlot);
     }
-    handleDragDrop();
+    // Use requestAnimationFrame to batch DOM updates for better performance
+    requestAnimationFrame(function() {
+        // Only reinitialize drag/drop if needed (not on every swap)
+        if ($(".item-drag").length > 0 && !$(".item-drag").data("ui-draggable")) {
+            handleDragDrop();
+        }
+    });
 }
 
 function isItemAllowed(item, allowedItems) {
@@ -2541,6 +2588,120 @@ var requiredItemOpen = false;
             width: data.pDamage + "px",
             "background-color": skullcolor,
         });
+        
+        // Update body part damage bars from skeleton data
+        // Initialize all bars with default styling
+        $("#left-arm-bar").css({
+            width: "0px",
+            "background-color": skullcolor,
+            "display": "block",
+            "opacity": "0.75",
+            "visibility": "visible",
+        });
+        $("#right-arm-bar").css({
+            width: "0px",
+            "background-color": skullcolor,
+            "display": "block",
+            "opacity": "0.75",
+            "visibility": "visible",
+        });
+        $("#left-leg-bar").css({
+            width: "0px",
+            "background-color": skullcolor,
+            "display": "block",
+            "opacity": "0.75",
+            "visibility": "visible",
+        });
+        $("#right-leg-bar").css({
+            width: "0px",
+            "background-color": skullcolor,
+            "display": "block",
+            "opacity": "0.75",
+            "visibility": "visible",
+        });
+        
+        if (data.skelly) {
+            // Debug: log skeleton data
+            console.log("Skeleton data:", data.skelly);
+            
+            // Left Arm - try multiple possible key names
+            var leftArmDamage = 0;
+            if (data.skelly.left_arm !== undefined) {
+                leftArmDamage = data.skelly.left_arm;
+            } else if (data.skelly.leftArm !== undefined) {
+                leftArmDamage = data.skelly.leftArm;
+            } else if (data.skelly["left arm"] !== undefined) {
+                leftArmDamage = data.skelly["left arm"];
+            } else if (data.skelly.leftarm !== undefined) {
+                leftArmDamage = data.skelly.leftarm;
+            }
+            // Always update the bar, even if damage is 0
+            leftArmDamage = Math.max(0, Math.min(75, leftArmDamage));
+            $("#left-arm-bar").css({
+                width: leftArmDamage + "px",
+                "background-color": skullcolor,
+            });
+            
+            // Right Arm
+            var rightArmDamage = 0;
+            if (data.skelly.right_arm !== undefined) {
+                rightArmDamage = data.skelly.right_arm;
+            } else if (data.skelly.rightArm !== undefined) {
+                rightArmDamage = data.skelly.rightArm;
+            } else if (data.skelly["right arm"] !== undefined) {
+                rightArmDamage = data.skelly["right arm"];
+            } else if (data.skelly.rightarm !== undefined) {
+                rightArmDamage = data.skelly.rightarm;
+            }
+            // Always update the bar, even if damage is 0
+            rightArmDamage = Math.max(0, Math.min(75, rightArmDamage));
+            $("#right-arm-bar").css({
+                width: rightArmDamage + "px",
+                "background-color": skullcolor,
+            });
+            
+            // Left Leg
+            var leftLegDamage = 0;
+            if (data.skelly.left_leg !== undefined) {
+                leftLegDamage = data.skelly.left_leg;
+            } else if (data.skelly.leftLeg !== undefined) {
+                leftLegDamage = data.skelly.leftLeg;
+            } else if (data.skelly["left leg"] !== undefined) {
+                leftLegDamage = data.skelly["left leg"];
+            } else if (data.skelly.leftleg !== undefined) {
+                leftLegDamage = data.skelly.leftleg;
+            }
+            // Always update the bar, even if damage is 0
+            leftLegDamage = Math.max(0, Math.min(75, leftLegDamage));
+            $("#left-leg-bar").css({
+                width: leftLegDamage + "px",
+                "background-color": skullcolor,
+            });
+            
+            // Right Leg
+            var rightLegDamage = 0;
+            if (data.skelly.right_leg !== undefined) {
+                rightLegDamage = data.skelly.right_leg;
+            } else if (data.skelly.rightLeg !== undefined) {
+                rightLegDamage = data.skelly.rightLeg;
+            } else if (data.skelly["right leg"] !== undefined) {
+                rightLegDamage = data.skelly["right leg"];
+            } else if (data.skelly.rightleg !== undefined) {
+                rightLegDamage = data.skelly.rightleg;
+            }
+            // Always update the bar, even if damage is 0
+            rightLegDamage = Math.max(0, Math.min(75, rightLegDamage));
+            $("#right-leg-bar").css({
+                width: rightLegDamage + "px",
+                "background-color": skullcolor,
+            });
+        } else {
+            // If no skeleton data, set all bars to 0
+            $("#left-arm-bar").css({ width: "0px" });
+            $("#right-arm-bar").css({ width: "0px" });
+            $("#left-leg-bar").css({ width: "0px" });
+            $("#right-leg-bar").css({ width: "0px" });
+        }
 
         if (requiredItemOpen) {
             $(".requiredItem-container").hide();
