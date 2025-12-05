@@ -1,4 +1,4 @@
-> ⚠️ **Warning**
+> ⚠️ **Warning** (ABOUT VERSION 2)
 >
 > I am **not responsible** for anyone who buys this script from other websites and realizes it's not the same.  
 > I **do not sell** my scripts on any site they are **only available through Discord** 💬  
