@@ -1,5 +1,6 @@
 -- Variables
-local QBCore = exports['qb-core']:GetCoreObject()
+-- Use global QBCore from compatibility layer if available, otherwise get it locally
+local QBCore = QBCore or exports['qb-core']:GetCoreObject()
 local PlayerData = {
     items = {},
     metadata = {},
@@ -197,6 +198,8 @@ local function CloseTrunk()
 end
 
 local function closeInventory()
+    -- ensure server-side state is cleared when closing inventory
+    LocalPlayer.state:set("inv_busy", false, true)
     SendNUIMessage({
         action = "close",
     })
@@ -400,6 +403,8 @@ end)
 
 RegisterNetEvent('QBCore:Client:UpdateObject', function()
     QBCore = exports['qb-core']:GetCoreObject()
+    -- Update global QBCore for compatibility
+    _G.QBCore = QBCore
 end)
 
 RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
@@ -960,6 +965,8 @@ RegisterNUICallback('getCombineItem', function(data, cb)
 end)
 
 RegisterNUICallback("CloseInventory", function()
+    -- clear busy flag whenever NUI closes
+    LocalPlayer.state:set("inv_busy", false, true)
     if currentOtherInventory == "none-inv" then
         CurrentDrop = nil
         CurrentVehicle = nil
