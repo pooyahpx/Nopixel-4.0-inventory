@@ -569,9 +569,17 @@ body {
     background: radial-gradient(83% 83% at 50% 50%, rgba(180, 180, 180, 0.158), rgba(120, 120, 120, .05));
     box-shadow: 0rem 0rem 30px 5px #17191cd8 inset;
     margin: 8px;
-    transition: all 0.06s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 90%;
     z-index: 1;
+    cursor: grab;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.item-slot:active {
+    cursor: grabbing;
 }
 
 .item-slot:hover {
@@ -579,6 +587,7 @@ body {
     border: solid #2debbc 1px;
     opacity: 10px;
     box-shadow: 0.0rem 0.0rem 20px 5px #0000009f inset;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-inv {
@@ -662,6 +671,10 @@ body {
     box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
     color: white;
     transition: background-color .1s linear;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 10001;
+    position: relative;
 }
 
 .inv-option-hand {
@@ -796,6 +809,11 @@ body {
     height: auto;
     max-width: 92%;
     max-height: 100%;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+.item-slot:hover .item-slot-img img {
+    transform: scale(1.1);
 }
 
 .item-slot-img-itembox img {
@@ -816,6 +834,32 @@ body {
 .ui-draggable-dragging {
     background: rgba(0, 0, 0, 0.3);
     z-index: 9999;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s ease;
+    cursor: grabbing !important;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.ui-draggable-dragging * {
+    pointer-events: none;
+}
+
+.item-slot-hoverClass {
+    background-color: rgba(45, 235, 188, 0.3) !important;
+    border: 2px solid #2debbc !important;
+    box-shadow: 0 0 15px rgba(45, 235, 188, 0.5) inset !important;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform: scale(1.05) translateZ(0);
+    will-change: transform;
+}
+
+.button-hover {
+    background-color: rgba(49, 212, 169, 0.4) !important;
+    box-shadow: 0 0 1.5vh #31d4a9 !important;
+    border: 2px solid #31d4a9 !important;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform: scale(1.05);
 }
 
 .player-inv-info {
@@ -1538,6 +1582,227 @@ body {
         margin: 3px;
         transition: opacity 0.06s ease 0s;
         opacity: 90%;
+    }
+    
+    #player-inv-label {
+        position: relative;
+        font-size: 1.125rem;
+        font-weight: 400;
+        font-display: bold;
+        text-transform: capitalize;
+        text-shadow: 0 0 1vh #2debba;
+        color: #00f8b9;
+        letter-spacing: 0.01vh;
+        left: 118%;
+        bottom: 22px;
+        float: left;
+        cursor: none;
+    }
+    
+    #player-inv-weight {
+        position: relative;
+        color: rgb(175, 175, 175);
+        font-size: 15px;
+        font-weight: 200;
+        font-family: 'Oswald', sans-serif !important;
+        letter-spacing: 0.1vh;
+        bottom: 25px;
+        right: -36%;
+        float: right;
+    }
+    
+    #other-inv-label {
+        position: relative;
+        font-size: 1.125rem;
+        font-weight: 400;
+        font-display: bold;
+        text-transform: capitalize;
+        text-shadow: 0 0 1vh #2debba;
+        color: #00f8b9;
+        letter-spacing: 0.01vh;
+        float: left;
+        cursor: none;
+        left: 46%;
+        bottom: 22px;
+    }
+    
+    #other-inv-weight {
+        position: relative;
+        color: rgb(175, 175, 175);
+        font-size: 15px;
+        font-weight: 200;
+        font-family: 'Oswald', sans-serif !important;
+        letter-spacing: 0.1vh;
+        bottom: 25px;
+        right: 32%;
+        transform: translateX(4.5%);
+        float: right;
+        cursor: none;
+        text-align: left;
+    }
+    
+    #pocket-inv-label {
+        position: relative;
+        font-size: 1.125rem;
+        font-weight: 400;
+        font-display: bold;
+        text-transform: capitalize;
+        text-shadow: 0 0 1vh #2debba;
+        color: #00f8b9;
+        letter-spacing: 0.01vh;
+        left: 9%;
+        bottom: -140px;
+        float: left;
+        cursor: none;
+    }
+    
+    #backpack-inv-label {
+        position: relative;
+        font-size: 1.125rem;
+        font-weight: 400;
+        font-display: bold;
+        text-transform: capitalize;
+        text-shadow: 0 0 1vh #2debba;
+        color: #00f8b9;
+        letter-spacing: 0.01vh;
+        float: left;
+        cursor: none;
+        left: 34%;
+        margin-top: 28.5%;
+    }
+    
+    .player-inv-info {
+        position: absolute;
+        left: 3.3%;
+        top: 15.6%;
+        width: 28.8%;
+        z-index: 1000;
+        cursor: none;
+    }
+    
+    .other-inv-info {
+        position: absolute;
+        left: 58.3%;
+        top: 15.6%;
+        width: 28.8%;
+        z-index: 1000;
+    }
+    
+    .inventory-name4 {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 1.125rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #e7e7e7d3;
+        top: 74%;
+        margin-left: 5.5%;
+    }
+    
+    .player-name-title {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #797878fd;
+        top: 78.7%;
+        margin-left: 6%;
+    }
+    
+    .player-name {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 1.125rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #dddadafd;
+        top: 80.3%;
+        margin-left: 6%;
+    }
+    
+    .phone-number-title {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #797878fd;
+        top: 78.7%;
+        margin-left: 18.5%;
+    }
+    
+    .phone-number {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 1.125rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #dddadafd;
+        top: 80.3%;
+        margin-left: 18.5%;
+    }
+    
+    .player-id-title {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #797878fd;
+        top: 84.7%;
+        margin-left: 6%;
+    }
+    
+    .player-id {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 1.125rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #dddadafd;
+        top: 86.3%;
+        margin-left: 6%;
+    }
+    
+    .citizen-id-title {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #797878fd;
+        top: 84.7%;
+        margin-left: 18.5%;
+    }
+    
+    .citizen-id {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        font-size: 1.125rem;
+        font-display: bold;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #dddadafd;
+        top: 86.3%;
+        margin-left: 18.5%;
     }
 }
 
@@ -2304,23 +2569,32 @@ body {
     transform: translate(-12.2rem, 6.85rem);
     width: 80px;
     height: 3.25px;
+    z-index: 5;
+}
+
+.levarukainv-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border: 1px solid rgba(0, 0, 0, 0.438);
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    z-index: 1;
 }
 
 .levarukainv2 {
     position: absolute;
-    bottom: 0.25px;
-    left: 1.0px;
-    width: 75px;
+    top: 0px;
+    left: 2px;
+    width: 0px;
     height: 3px;
-    max-width: 75px;
-    padding-left: 2px;
-    padding-right: 2px;
+    max-width: 76px;
     background-color: #F86969;
     opacity: 0.75;
     border-radius: 10px;
+    z-index: 10;
 }
 
 #levarukainvbar2 {
@@ -2332,23 +2606,32 @@ body {
     transform: translate(-27.90rem, 9.85rem);
     width: 80px;
     height: 3.25px;
+    z-index: 5;
+}
+
+.desnarukainv-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border: 1px solid rgba(0, 0, 0, 0.438);
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    z-index: 1;
 }
 
 .desnarukainv2 {
     position: absolute;
-    bottom: 0.25px;
-    left: 1.0px;
-    width: 75px;
+    top: 0px;
+    left: 2px;
+    width: 0px;
     height: 3px;
-    max-width: 75px;
-    padding-left: 2px;
-    padding-right: 2px;
+    max-width: 76px;
     background-color: #F86969;
     opacity: 0.75;
     border-radius: 10px;
+    z-index: 10;
 }
 
 #desnarukainvbar2 {
@@ -2360,23 +2643,32 @@ body {
     transform: translate(-13.70rem, 30.25rem);
     width: 80px;
     height: 3.25px;
+    z-index: 5;
+}
+
+.levanogainv-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border: 1px solid rgba(0, 0, 0, 0.438);
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    z-index: 1;
 }
 
 .levanogainv2 {
     position: absolute;
-    bottom: 0.25px;
-    left: 1.0px;
-    width: 75px;
+    top: 0px;
+    left: 2px;
+    width: 0px;
     height: 3px;
-    max-width: 75px;
-    padding-left: 2px;
-    padding-right: 2px;
+    max-width: 76px;
     background-color: #F86969;
     opacity: 0.75;
     border-radius: 10px;
+    z-index: 10;
 }
 
 #levanogainvbar2 {
@@ -2388,23 +2680,32 @@ body {
     transform: translate(-26.50rem, 29.60rem);
     width: 80px;
     height: 3.25px;
+    z-index: 5;
+}
+
+.desnanogainv-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border: 1px solid rgba(0, 0, 0, 0.438);
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    z-index: 1;
 }
 
 .desnanogainv2 {
     position: absolute;
-    bottom: 0.25px;
-    left: 1.0px;
-    width: 75px;
+    top: 0px;
+    left: 2px;
+    width: 0px;
     height: 3px;
-    max-width: 75px;
-    padding-left: 2px;
-    padding-right: 2px;
+    max-width: 76px;
     background-color: #F86969;
     opacity: 0.75;
     border-radius: 10px;
+    z-index: 10;
 }
 
 #desnanogainvbar2 {
