@@ -6,6 +6,7 @@ version '1.0.4'
 
 shared_scripts {
 	'config.lua',
+	'shared/qbcore_compat.lua',
 	'@qb-core/shared/locale.lua',
 	'@qb-weapons/config.lua'
 }
