@@ -1,6 +1,10 @@
 Config = {}
 
-Config.QBCoreVersion = "new" -- Change this to "old" if you're using old QBCore
+-- Framework Selection
+-- Options: "qbcore", "qbox", or "auto" (auto-detect)
+Config.Framework = "auto" -- Change to "qbcore" or "qbox" if auto-detect doesn't work
+
+Config.QBCoreVersion = "new" -- Change this to "old" if you're using old QBCore (only for QBCore)
 
 Config.UseTarget = GetConvar('UseTarget', 'false') == 'true' -- Use qb-target interactions (don't change this, go to your server.cfg and add `setr UseTarget true` to use this and just that from true to false or the other way around)
 
