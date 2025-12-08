@@ -3,7 +3,10 @@
 > I am **not responsible** for anyone who buys this script from other websites and realizes it's not the same.  
 > I **do not sell** my scripts on any site they are **only available through Discord** 💬  
 > All payments are made **exclusively via PayPal** 💸  
-> ⚡ Only **9 copies left** of this product 🙏🏻❤️
+> ⚡ Only **9 copies left** of this product 🙏🏻❤️  
+>
+> 📩 **Contact me on Discord:**  
+> 👉 [poya3724](https://discord.com/users/1000336589140021278)
 
 # NOTE 
 
