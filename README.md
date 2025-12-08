@@ -36,7 +36,7 @@ Don't hesitate—I'm always open to discuss and connect! 🚀
 
 
 
-# UPDATE V1.6.5 (LAST FREE UPDATE) FOR NEW QBCORE
+# UPDATE V1.6.5 (LAST FREE UPDATE) NEW QBCORE AND QBOX
 
 # qb-inventory  – Recent Changes
 
