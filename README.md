@@ -36,9 +36,17 @@ Don't hesitate—I'm always open to discuss and connect! 🚀
 
 
 
-# UPDATE V1.6 (LAST FREE UPDATE) FOR NEW QBCORE
+# UPDATE V1.6.5 (LAST FREE UPDATE) FOR NEW QBCORE
 
-#EVERYTHING WORK ON NEW QBCORE RIGHT NOW 
+# qb-inventory  – Recent Changes
+
++ Added framework auto-detector (QBCore/QBox/auto) via `Config.Framework`
++ Added QBox compatibility (core export fallbacks and resource name checks)
++ Kept backward compatibility with old/new QBCore (`Config.QBCoreVersion`)
++ Updated server/client fallback handlers to use the compatibility layer
++ Smoothed startup logging with clear detected-framework messages
++ Added QBox compatibility docs and troubleshooting guide
++ Cleaned fxmanifest optional locales to avoid load errors on QBCore
 
 **********
  
