@@ -1,6 +1,16 @@
 -- Variables
--- Use global QBCore from compatibility layer if available, otherwise get it locally
-local QBCore = QBCore or exports['qb-core']:GetCoreObject()
+-- Use global QBCore from compatibility layer (always available after shared/qbcore_compat.lua loads)
+-- Fallback is only for safety
+local QBCore = QBCore or _G.QBCore or (function()
+    local Framework = _G.Framework or "qbcore"
+    if Framework == "qbox" then
+        local success1, core1 = pcall(function() return exports['qbox-core']:GetCoreObject() end)
+        local success2, core2 = pcall(function() return exports['qbox_core']:GetCoreObject() end)
+        if success1 and core1 then return core1
+        elseif success2 and core2 then return core2 end
+    end
+    return exports['qb-core']:GetCoreObject()
+end)()
 local PlayerData = {
     items = {},
     metadata = {},
@@ -402,7 +412,19 @@ RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
 end)
 
 RegisterNetEvent('QBCore:Client:UpdateObject', function()
-    QBCore = exports['qb-core']:GetCoreObject()
+    -- Use compatibility layer to get the correct core object
+    local Framework = _G.Framework or "qbcore"
+    if Framework == "qbox" then
+        local success1, core1 = pcall(function() return exports['qbox-core']:GetCoreObject() end)
+        local success2, core2 = pcall(function() return exports['qbox_core']:GetCoreObject() end)
+        if success1 and core1 then
+            QBCore = core1
+        elseif success2 and core2 then
+            QBCore = core2
+        end
+    else
+        QBCore = exports['qb-core']:GetCoreObject()
+    end
     -- Update global QBCore for compatibility
     _G.QBCore = QBCore
 end)
