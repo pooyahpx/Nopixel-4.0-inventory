@@ -1,6 +1,6 @@
-# Full Changelog - qb-inventory Fixes V 1.6.6
+# Full Changelog - qb-inventory Fixes V 1.6.7
 
-#VERSION 1.6.6
+#VERSION 1.6.7
 
 ## Complete List of Fixes and Changes
 
