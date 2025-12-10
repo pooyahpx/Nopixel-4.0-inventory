@@ -39,17 +39,22 @@ Don't hesitate—I'm always open to discuss and connect! 🚀
 
 
 
-# UPDATE V1.6.5 (LAST FREE UPDATE) NEW QBCORE AND QBOX
+# UPDATE V1.6.7 (LAST FREE UPDATE) NEW QBCORE AND QBOX
 
-# qb-inventory  – Recent Changes
+# qb-inventory  – Recent Changes 
 
-+ Added framework auto-detector (QBCore/QBox/auto) via `Config.Framework`
-+ Added QBox compatibility (core export fallbacks and resource name checks)
-+ Kept backward compatibility with old/new QBCore (`Config.QBCoreVersion`)
-+ Updated server/client fallback handlers to use the compatibility layer
-+ Smoothed startup logging with clear detected-framework messages
-+ Added QBox compatibility docs and troubleshooting guide
-+ Cleaned fxmanifest optional locales to avoid load errors on QBCore
+- ✅ QBox/QBCore auto-detection works
+- ✅ Inventory doesn't close when dropping items
+- ✅ Slots don't resize or disappear
+- ✅ Weapon attachments load correctly
+- ✅ Weapon panel opens with single click
+- ✅ All 15 player slots remain visible after item movement
+- ✅ Multiple ground items can be picked up without closing inventory
+- ✅ Ground items disappear from UI after pickup
+- ✅ No script errors in qb-phone or qb-weapons
+- ✅ Admin /giveitem command works correctly
+- ✅ Items appear immediately in inventory after /giveitem
+- ✅ Error messages are clear and specific
 
 **********
  
