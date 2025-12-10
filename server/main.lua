@@ -164,15 +164,19 @@ local function AddItem(source, item, amount, slot, info, created)
 
 	local totalWeight = GetTotalWeight(Player.PlayerData.items)
 	local itemInfo = QBCore.Shared.Items[item:lower()]
+	
+	if not itemInfo then
+		if not Player.Offline then
+			QBCore.Functions.Notify(source, "Item does not exist", 'error')
+		end
+		return false
+	end
+	
 	local time = os.time()
 	if not created then
 		itemInfo['created'] = time
 	else
 		itemInfo['created'] = created
-	end
-	if not itemInfo and not Player.Offline then
-		QBCore.Functions.Notify(source, "Item does not exist", 'error')
-		return false
 	end
 
 	amount = tonumber(amount) or 1
@@ -206,7 +210,7 @@ local function AddItem(source, item, amount, slot, info, created)
 					end
 				end
 			end
-		elseif not itemInfo['unique'] and slot or slot and Player.PlayerData.items[slot] == nil then
+		elseif (not itemInfo['unique'] and slot) or (slot and Player.PlayerData.items[slot] == nil) then
 			Player.PlayerData.items[slot] = { name = itemInfo['name'], amount = amount, info = info or '', label = itemInfo['label'], description = itemInfo['description'] or '', weight = itemInfo['weight'], type = itemInfo['type'], unique = itemInfo['unique'], useable = itemInfo['useable'], image = itemInfo['image'], shouldClose = itemInfo['shouldClose'], slot = slot, combinable = itemInfo['combinable'], created = itemInfo['created'] }
 			Player.PlayerData.items = Player.PlayerData.items
 			Player.Functions.SetPlayerData("items", Player.PlayerData.items)
@@ -225,7 +229,12 @@ local function AddItem(source, item, amount, slot, info, created)
 
 					if Player.Offline then return true end
 
-					TriggerEvent('qb-log:server:CreateLog', 'playerinventory', 'AddItem', 'green', '**' .. GetPlayerName(source) .. ' (citizenid: ' .. Player.PlayerData.citizenid .. ' | id: ' .. source .. ')** got item: [slot:' .. i .. '], itemname: ' .. Player.PlayerData.items[i].name .. ', added amount: ' .. amount .. ', new total amount: ' .. Player.PlayerData.items[i].amount)
+					local citizenid = Player.PlayerData.citizenid or "unknown"
+					local playerName = (source and source > 0) and GetPlayerName(source) or "Offline/System"
+					local sourceId = source or 0
+					local itemName = (Player.PlayerData.items[i] and Player.PlayerData.items[i].name) or "unknown"
+					local itemAmount = (Player.PlayerData.items[i] and Player.PlayerData.items[i].amount) or amount
+					TriggerEvent('qb-log:server:CreateLog', 'playerinventory', 'AddItem', 'green', '**' .. playerName .. ' (citizenid: ' .. citizenid .. ' | id: ' .. sourceId .. ')** got item: [slot:' .. i .. '], itemname: ' .. itemName .. ', added amount: ' .. amount .. ', new total amount: ' .. itemAmount)
 
 					return true
 				end
@@ -320,8 +329,10 @@ exports("GetItemBySlot", GetItemBySlot)
 
 local function GetItemByName(source, item)
 	local Player = QBCore.Functions.GetPlayer(source)
+	if not Player then return nil end
 	item = tostring(item):lower()
 	local slot = GetFirstSlotByItem(Player.PlayerData.items, item)
+	if not slot then return nil end
 	return Player.PlayerData.items[slot]
 end
 
@@ -382,13 +393,17 @@ exports("ClearInventory", ClearInventory)
 
 local function SetInventory(source, items)
 	local Player = QBCore.Functions.GetPlayer(source)
+	
+	if not Player then return false end
 
 	Player.PlayerData.items = items
 	Player.Functions.SetPlayerData("items", Player.PlayerData.items)
 
-	if Player.Offline then return end
+	if Player.Offline then return true end
 
+	TriggerClientEvent("inventory:client:UpdatePlayerInventory", source, false)
 	TriggerEvent('qb-log:server:CreateLog', 'playerinventory', 'SetInventory', 'blue', '**' .. GetPlayerName(source) .. ' (citizenid: ' .. Player.PlayerData.citizenid .. ' | id: ' .. source .. ')** items set: ' .. json.encode(items))
+	return true
 end
 
 exports("SetInventory", SetInventory)
@@ -1237,35 +1252,112 @@ local function OpenInventory(name, id, other, origin)
 				end
 				Wait(250)
 			end
-		else
-			if Drops[id] then
-				if Drops[id].isOpen then
-					local Target = QBCore.Functions.GetPlayer(Drops[id].isOpen)
-					if Target then
-						TriggerClientEvent('inventory:client:CheckOpenState', Drops[id].isOpen, name, id, Drops[id].label)
+			else
+				-- Handle drops - merge all nearby drops into one inventory (when id == "all" or nil)
+				if tostring(id) == "all" or not id or id == "" then
+					local playerPed = GetPlayerPed(src)
+					local playerCoords = GetEntityCoords(playerPed)
+					local mergedInventory = {}
+					local mergedSlots = 0
+					local mergedDrops = {}
+					local maxDistance = 2.5 -- Slightly increased distance
+					
+					-- Find all drops within range and merge them
+					for dropId, dropData in pairs(Drops) do
+						if dropData and dropData.items and next(dropData.items) then
+							local dropPos = vector3(dropData.coords.x, dropData.coords.y, dropData.coords.z)
+							local distance = #(playerCoords - dropPos)
+							
+							if distance < maxDistance then
+								-- Add items from this drop to merged inventory
+								for slot, item in pairs(dropData.items) do
+									if item and item.name then
+										mergedSlots = mergedSlots + 1
+										mergedInventory[mergedSlots] = {
+											name = item.name,
+											amount = item.amount,
+											info = item.info,
+											label = item.label,
+											description = item.description,
+											weight = item.weight,
+											type = item.type,
+											unique = item.unique,
+											useable = item.useable,
+											image = item.image,
+											slot = mergedSlots
+										}
+									end
+								end
+								table.insert(mergedDrops, dropId)
+								-- Mark drop as open by this player (don't block other players)
+								if Drops[dropId].isOpen ~= src then
+									Drops[dropId].isOpen = src
+									Drops[dropId].createdTime = os.time()
+								end
+							end
+						end
+					end
+					
+					if next(mergedInventory) then
+						secondInv.name = "merged-drops"
+						secondInv.label = "Ground Items"
+						secondInv.maxweight = 100000
+						secondInv.inventory = mergedInventory
+						secondInv.slots = mergedSlots > 0 and mergedSlots or 30
+						secondInv.mergedDrops = mergedDrops
 					else
-						Drops[id].isOpen = false
+						secondInv.name = "none-inv"
+						secondInv.label = "Dropped-None"
+						secondInv.maxweight = 100000
+						secondInv.inventory = {}
+						secondInv.slots = 0
+					end
+				else
+					-- Single drop (backward compatibility)
+					if Drops[id] then
+						if Drops[id].isOpen and Drops[id].isOpen ~= src then
+							local Target = QBCore.Functions.GetPlayer(Drops[id].isOpen)
+							if Target then
+								TriggerClientEvent('inventory:client:CheckOpenState', Drops[id].isOpen, name, id, Drops[id].label)
+								secondInv.name = "none-inv"
+								secondInv.label = "Dropped-None"
+								secondInv.maxweight = 100000
+								secondInv.inventory = {}
+								secondInv.slots = 0
+							else
+								Drops[id].isOpen = false
+								secondInv.coords = Drops[id].coords
+								secondInv.name = id
+								secondInv.label = "Dropped-"..tostring(id)
+								secondInv.maxweight = 100000
+								secondInv.inventory = Drops[id].items
+								secondInv.slots = 30
+								Drops[id].isOpen = src
+								Drops[id].label = secondInv.label
+								Drops[id].createdTime = os.time()
+							end
+						else
+							secondInv.coords = Drops[id].coords
+							secondInv.name = id
+							secondInv.label = "Dropped-"..tostring(id)
+							secondInv.maxweight = 100000
+							secondInv.inventory = Drops[id].items
+							secondInv.slots = 30
+							if Drops[id].isOpen ~= src then
+								Drops[id].isOpen = src
+								Drops[id].label = secondInv.label
+								Drops[id].createdTime = os.time()
+							end
+						end
+					else
+						secondInv.name = "none-inv"
+						secondInv.label = "Dropped-None"
+						secondInv.maxweight = 100000
+						secondInv.inventory = {}
+						secondInv.slots = 0
 					end
 				end
 			end
-			if Drops[id] and not Drops[id].isOpen then
-				secondInv.coords = Drops[id].coords
-				secondInv.name = id
-				secondInv.label = "Dropped-"..tostring(id)
-				secondInv.maxweight = 100000
-				secondInv.inventory = Drops[id].items
-				secondInv.slots = 30
-				Drops[id].isOpen = src
-				Drops[id].label = secondInv.label
-				Drops[id].createdTime = os.time()
-			else
-				secondInv.name = "none-inv"
-				secondInv.label = "Dropped-None"
-				secondInv.maxweight = 100000
-				secondInv.inventory = {}
-				secondInv.slots = 0
-			end
-		end
 		TriggerClientEvent("lj-inventory:client:closeinv", id)
 		TriggerClientEvent("inventory:client:OpenInventory", src, {}, Player.PlayerData.items, secondInv)
 	else
@@ -1570,32 +1662,109 @@ RegisterNetEvent('inventory:server:OpenInventory', function(name, id, other)
                     Wait(250)
                 end
 			else
-				if Drops[id] then
-					if Drops[id].isOpen then
-						local Target = QBCore.Functions.GetPlayer(Drops[id].isOpen)
-						if Target then
-							TriggerClientEvent('inventory:client:CheckOpenState', Drops[id].isOpen, name, id, Drops[id].label)
-						else
-							Drops[id].isOpen = false
+				-- Handle drops - merge all nearby drops into one inventory (when id == "all" or nil)
+				if tostring(id) == "all" or not id or id == "" then
+					local playerPed = GetPlayerPed(src)
+					local playerCoords = GetEntityCoords(playerPed)
+					local mergedInventory = {}
+					local mergedSlots = 0
+					local mergedDrops = {}
+					local maxDistance = 2.5 -- Slightly increased distance
+					
+					-- Find all drops within range and merge them
+					for dropId, dropData in pairs(Drops) do
+						if dropData and dropData.items and next(dropData.items) then
+							local dropPos = vector3(dropData.coords.x, dropData.coords.y, dropData.coords.z)
+							local distance = #(playerCoords - dropPos)
+							
+							if distance < maxDistance then
+								-- Add items from this drop to merged inventory
+								for slot, item in pairs(dropData.items) do
+									if item and item.name then
+										mergedSlots = mergedSlots + 1
+										mergedInventory[mergedSlots] = {
+											name = item.name,
+											amount = item.amount,
+											info = item.info,
+											label = item.label,
+											description = item.description,
+											weight = item.weight,
+											type = item.type,
+											unique = item.unique,
+											useable = item.useable,
+											image = item.image,
+											slot = mergedSlots
+										}
+									end
+								end
+								table.insert(mergedDrops, dropId)
+								-- Mark drop as open by this player (don't block other players)
+								if Drops[dropId].isOpen ~= src then
+									Drops[dropId].isOpen = src
+									Drops[dropId].createdTime = os.time()
+								end
+							end
 						end
 					end
-				end
-				if Drops[id] and not Drops[id].isOpen then
-					secondInv.coords = Drops[id].coords
-					secondInv.name = id
-					secondInv.label = "Dropped-"..tostring(id)
-					secondInv.maxweight = 100000
-					secondInv.inventory = Drops[id].items
-					secondInv.slots = 30
-					Drops[id].isOpen = src
-					Drops[id].label = secondInv.label
-					Drops[id].createdTime = os.time()
+					
+					if next(mergedInventory) then
+						secondInv.name = "merged-drops"
+						secondInv.label = "Ground Items"
+						secondInv.maxweight = 100000
+						secondInv.inventory = mergedInventory
+						secondInv.slots = mergedSlots > 0 and mergedSlots or 30
+						secondInv.mergedDrops = mergedDrops
+					else
+						secondInv.name = "none-inv"
+						secondInv.label = "Dropped-None"
+						secondInv.maxweight = 100000
+						secondInv.inventory = {}
+						secondInv.slots = 0
+					end
 				else
-					secondInv.name = "none-inv"
-					secondInv.label = "Dropped-None"
-					secondInv.maxweight = 100000
-					secondInv.inventory = {}
-					secondInv.slots = 0
+					-- Single drop (backward compatibility)
+					if Drops[id] then
+						if Drops[id].isOpen and Drops[id].isOpen ~= src then
+							local Target = QBCore.Functions.GetPlayer(Drops[id].isOpen)
+							if Target then
+								TriggerClientEvent('inventory:client:CheckOpenState', Drops[id].isOpen, name, id, Drops[id].label)
+								secondInv.name = "none-inv"
+								secondInv.label = "Dropped-None"
+								secondInv.maxweight = 100000
+								secondInv.inventory = {}
+								secondInv.slots = 0
+							else
+								Drops[id].isOpen = false
+								secondInv.coords = Drops[id].coords
+								secondInv.name = id
+								secondInv.label = "Dropped-"..tostring(id)
+								secondInv.maxweight = 100000
+								secondInv.inventory = Drops[id].items
+								secondInv.slots = 30
+								Drops[id].isOpen = src
+								Drops[id].label = secondInv.label
+								Drops[id].createdTime = os.time()
+							end
+						else
+							secondInv.coords = Drops[id].coords
+							secondInv.name = id
+							secondInv.label = "Dropped-"..tostring(id)
+							secondInv.maxweight = 100000
+							secondInv.inventory = Drops[id].items
+							secondInv.slots = 30
+							if Drops[id].isOpen ~= src then
+								Drops[id].isOpen = src
+								Drops[id].label = secondInv.label
+								Drops[id].createdTime = os.time()
+							end
+						end
+					else
+						secondInv.name = "none-inv"
+						secondInv.label = "Dropped-None"
+						secondInv.maxweight = 100000
+						secondInv.inventory = {}
+						secondInv.slots = 0
+					end
 				end
 			end
 			TriggerClientEvent("lj-inventory:client:closeinv", id)
@@ -2308,13 +2477,58 @@ RegisterNetEvent('inventory:server:SetInventoryData', function(fromInventory, to
 	elseif type(fromInventory) == "string" and QBCore.Shared.SplitStr(fromInventory, "-")[1] == "itemshop" then
 		-- Shop purchase handled in itemshop section above, should not reach here
 		return
-	elseif type(fromInventory) == "number" or (type(fromInventory) == "string" and tonumber(fromInventory)) then
-		-- drop
-		fromInventory = tonumber(fromInventory)
+	elseif fromInventory == "merged-drops" then
+		-- Handle merged drops - need to find the actual drop and slot
+		local playerPed = GetPlayerPed(src)
+		local playerCoords = GetEntityCoords(playerPed)
+		local maxDistance = 2.0
+		local foundDropId = nil
+		local foundSlot = nil
+		local found = false
+		
+		-- Find all drops within range and locate the item by merged slot index
+		local mergedSlotIndex = 0
+		for dropId, dropData in pairs(Drops) do
+			if not found and dropData and dropData.items and next(dropData.items) then
+				local dropPos = vector3(dropData.coords.x, dropData.coords.y, dropData.coords.z)
+				local distance = #(playerCoords - dropPos)
+				
+				if distance < maxDistance then
+					for slot, item in pairs(dropData.items) do
+						if item then
+							mergedSlotIndex = mergedSlotIndex + 1
+							if mergedSlotIndex == fromSlot then
+								-- Found the item - use this drop and slot
+								foundDropId = dropId
+								foundSlot = slot
+								found = true
+								break
+							end
+						end
+					end
+				end
+			end
+			if found then break end
+		end
+		
+		-- Item not found in merged inventory
+		if not found or not foundDropId then
+			QBCore.Functions.Notify(src, "Item no longer exists", "error")
+			return
+		end
+		
+		fromInventory = foundDropId
+		fromSlot = foundSlot
 		if not Drops[fromInventory] or not Drops[fromInventory].items then
 			QBCore.Functions.Notify(src, "Drop no longer exists", "error")
 			return
 		end
+		-- Continue with drop logic below - convert merged-drops to regular drop handling
+	end
+	
+	-- Handle drop items (both merged-drops converted to drop ID and regular drops)
+	if type(fromInventory) == "number" and Drops[fromInventory] and Drops[fromInventory].items and Drops[fromInventory].items[fromSlot] then
+		-- This handles both regular drops and merged-drops that were converted to drop IDs
 		local fromItemData = Drops[fromInventory].items[fromSlot]
 		if not fromItemData then
 			QBCore.Functions.Notify(src, "Item doesn't exist", "error")
@@ -2380,6 +2594,110 @@ RegisterNetEvent('inventory:server:SetInventoryData', function(fromInventory, to
             QBCore.Functions.Notify(src, "Item doesn't exist??", "error")
 		end
 	end
+	
+	-- Update player inventory after any move operation
+	if (fromInventory == "player" or fromInventory == "hotbar") or (toInventory == "player" or toInventory == "hotbar") then
+		TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, false)
+	end
+	
+	-- If working with drops (including merged-drops), refresh the merged inventory view
+	local shouldRefresh = false
+	if fromInventory == "merged-drops" or (type(fromInventory) == "number" and Drops[fromInventory]) then
+		shouldRefresh = true
+	end
+	if toInventory == "merged-drops" or (type(toInventory) == "number" and Drops[toInventory]) then
+		shouldRefresh = true
+	end
+	
+	-- Update player inventory after any move operation
+	if (fromInventory == "player" or fromInventory == "hotbar") or (toInventory == "player" or toInventory == "hotbar") then
+		TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, false)
+	end
+	
+	-- If working with drops (including merged-drops), refresh the merged inventory view
+	-- Do this after a small delay to ensure drops are updated
+	if shouldRefresh then
+		Wait(150) -- Small delay to ensure drops are updated
+		TriggerEvent('inventory:server:RefreshMergedDrops', src)
+	end
+end)
+
+-- Event to refresh merged drops inventory after changes
+RegisterNetEvent('inventory:server:RefreshMergedDrops', function(source)
+	local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+	if not Player then return end
+	
+	-- Check if player has merged-drops inventory open
+	local currentOtherInv = nil
+	-- We need to check if the player currently has merged-drops open
+	-- For now, we'll always refresh if called
+	
+	-- Re-open inventory with merged drops
+	local playerPed = GetPlayerPed(src)
+	local playerCoords = GetEntityCoords(playerPed)
+	local mergedInventory = {}
+	local mergedSlots = 0
+	local mergedDrops = {}
+	local maxDistance = 2.5 -- Match the distance used in OpenInventory
+	
+	-- Find all drops within range and merge them
+	for dropId, dropData in pairs(Drops) do
+		if dropData and dropData.items and next(dropData.items) then
+			local dropPos = vector3(dropData.coords.x, dropData.coords.y, dropData.coords.z)
+			local distance = #(playerCoords - dropPos)
+			
+			if distance < maxDistance then
+				for slot, item in pairs(dropData.items) do
+					if item and item.name then
+						mergedSlots = mergedSlots + 1
+						mergedInventory[mergedSlots] = {
+							name = item.name,
+							amount = item.amount,
+							info = item.info,
+							label = item.label,
+							description = item.description,
+							weight = item.weight,
+							type = item.type,
+							unique = item.unique,
+							useable = item.useable,
+							image = item.image,
+							slot = mergedSlots
+						}
+					end
+				end
+				table.insert(mergedDrops, dropId)
+			end
+		end
+	end
+	
+	local secondInv = {}
+	if next(mergedInventory) then
+		secondInv.name = "merged-drops"
+		secondInv.label = "Ground Items"
+		secondInv.maxweight = 100000
+		secondInv.inventory = mergedInventory
+		secondInv.slots = mergedSlots > 0 and mergedSlots or 30
+		secondInv.mergedDrops = mergedDrops
+	else
+		secondInv.name = "none-inv"
+		secondInv.label = "Dropped-None"
+		secondInv.maxweight = 100000
+		secondInv.inventory = {}
+		secondInv.slots = 0
+	end
+	
+	-- Update the other inventory - send full other inventory data
+	-- Convert inventory from object to array format for client
+	local inventoryArray = {}
+	if secondInv.inventory and next(secondInv.inventory) then
+		for slot, item in pairs(secondInv.inventory) do
+			if item then
+				table.insert(inventoryArray, item)
+			end
+		end
+	end
+	TriggerClientEvent("inventory:client:UpdateOtherInventory", src, inventoryArray, false)
 end)
 
 RegisterNetEvent('qb-inventory:server:SaveStashItems', function(stashId, items)
@@ -2446,6 +2764,59 @@ end)
 
 QBCore.Functions.CreateCallback('inventory:server:GetCurrentDrops', function(_, cb)
 	cb(Drops)
+end)
+
+-- Get all nearby drops merged into one inventory
+QBCore.Functions.CreateCallback('inventory:server:GetNearbyDrops', function(source, cb, playerCoords)
+	local mergedInventory = {}
+	local mergedSlots = 0
+	local mergedDrops = {}
+	local maxDistance = 2.0 -- Same as client check
+	
+	if not playerCoords or not playerCoords.x then
+		return cb({inventory = {}, slots = 0, drops = {}})
+	end
+	
+	local playerPos = vector3(playerCoords.x, playerCoords.y, playerCoords.z)
+	
+	-- Find all drops within range and merge them
+	for dropId, dropData in pairs(Drops) do
+		if dropData and dropData.items and next(dropData.items) then
+			local dropPos = vector3(dropData.coords.x, dropData.coords.y, dropData.coords.z)
+			local distance = #(playerPos - dropPos)
+			
+			if distance < maxDistance then
+				-- Add items from this drop to merged inventory
+				for slot, item in pairs(dropData.items) do
+					if item then
+						mergedSlots = mergedSlots + 1
+						mergedInventory[mergedSlots] = {
+							name = item.name,
+							amount = item.amount,
+							info = item.info,
+							label = item.label,
+							description = item.description,
+							weight = item.weight,
+							type = item.type,
+							unique = item.unique,
+							useable = item.useable,
+							image = item.image,
+							slot = mergedSlots,
+							dropId = dropId, -- Store which drop this item came from
+							originalSlot = slot -- Store original slot in drop
+						}
+					end
+				end
+				table.insert(mergedDrops, dropId)
+			end
+		end
+	end
+	
+	cb({
+		inventory = mergedInventory,
+		slots = mergedSlots > 0 and mergedSlots or 30, -- Default to 30 if empty
+		drops = mergedDrops
+	})
 end)
 
 QBCore.Functions.CreateCallback('QBCore:HasItem', function(source, cb, items, amount)
@@ -2519,7 +2890,8 @@ QBCore.Commands.Add("giveitem", "Give An Item (Admin Only)", {{name="id", help="
 	local id = tonumber(args[1])
 	local Player = QBCore.Functions.GetPlayer(id)
 	local amount = tonumber(args[3]) or 1
-	local itemData = QBCore.Shared.Items[tostring(args[2]):lower()]
+	local itemName = tostring(args[2]):lower()
+	local itemData = QBCore.Shared.Items[itemName]
 	if Player then
 			if itemData then
 				-- check iteminfo
@@ -2548,14 +2920,54 @@ QBCore.Commands.Add("giveitem", "Give An Item (Admin Only)", {{name="id", help="
 					info.lab = exports["qb-methlab"]:GenerateRandomLab()
 				elseif itemData["name"] == "printerdocument" then
 					info.url = "https://cdn.discordapp.com/attachments/870094209783308299/870104331142189126/Logo_-_Display_Picture_-_Stylized_-_Red.png"
-				elseif QBCore.Shared.Items[itemData["name"]]["decay"] and QBCore.Shared.Items[itemData["name"]]["decay"] > 0 then
+				elseif itemData["name"] and QBCore.Shared.Items[itemData["name"]] and QBCore.Shared.Items[itemData["name"]]["decay"] and QBCore.Shared.Items[itemData["name"]]["decay"] > 0 then
 					info.quality = 100
 				end
 
-				if AddItem(id, itemData["name"], amount, false, info) then
-					QBCore.Functions.Notify(source, "You Have Given " ..GetPlayerName(id).." "..amount.." "..itemData["name"].. "", "success")
+				if itemData and itemData["name"] then
+					-- Use itemData["name"] directly (it's already the correct item name from QBCore.Shared.Items)
+					local addResult = AddItem(id, itemData["name"], amount, false, info)
+					if addResult then
+						-- Update player inventory on client side
+						TriggerClientEvent("inventory:client:UpdatePlayerInventory", id, false)
+						
+						local targetName = "Unknown Player"
+						if id and id > 0 then
+							local nameResult = GetPlayerName(id)
+							if nameResult then
+								targetName = nameResult
+							end
+						end
+						local itemName = (itemData and itemData["name"]) or "Unknown Item"
+						local amountStr = tostring(amount or 1)
+						local message = "You Have Given " .. tostring(targetName) .. " " .. tostring(amountStr) .. " " .. tostring(itemName) .. ""
+						if source and source > 0 then
+							QBCore.Functions.Notify(source, message, "success")
+						end
+						-- Also notify the target player
+						if id and id > 0 then
+							QBCore.Functions.Notify(id, "You received " .. amountStr .. "x " .. itemName, "success")
+						end
+					else
+						if source and source > 0 then
+							-- Check if it's a weight issue or item doesn't exist
+							local targetPlayer = QBCore.Functions.GetPlayer(id)
+							if targetPlayer then
+								local totalWeight = GetTotalWeight(targetPlayer.PlayerData.items)
+								if totalWeight >= Config.MaxInventoryWeight then
+									QBCore.Functions.Notify(source, "Can\'t give item! Player inventory is full (weight limit)", "error")
+								else
+									QBCore.Functions.Notify(source, "Can\'t give item! (Item doesn't exist or inventory slots full)", "error")
+								end
+							else
+								QBCore.Functions.Notify(source, "Can\'t give item! Player not found", "error")
+							end
+						end
+					end
 				else
-					QBCore.Functions.Notify(source, "Can\'t give item!", "error")
+					if source and source > 0 then
+						QBCore.Functions.Notify(source, "Item data not found! Check item name: " .. tostring(args[2] or "nil"), "error")
+					end
 				end
 			else
 				QBCore.Functions.Notify(source, "Item Does Not Exist", "error")
