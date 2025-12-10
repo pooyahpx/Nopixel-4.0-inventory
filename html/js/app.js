@@ -117,12 +117,12 @@ var ItemInventory = null;
 
 $(document).on("contextmenu", ".item-slot", function(e) {
     e.preventDefault();
-    $('.inv-option-item').css('display', 'none');
-    $(".ply-iteminfo-container").css("opacity", "0.0");
-    $('#item-amount').hide();
-    $('#item-amount-text').hide();
-    if ($(this).data("item") != null) {
-        contextMenuSelectedItem = $(this).data("item");
+    e.stopPropagation();
+    
+    var itemData = $(this).data("item");
+    
+    if (itemData != null && itemData !== undefined) {
+        contextMenuSelectedItem = itemData;
         ItemInventory = $(this).parent().attr("data-inventory");
         
         // Show all buttons first
@@ -151,6 +151,8 @@ $(document).on("contextmenu", ".item-slot", function(e) {
         $('.inv-option-item').css('display', 'none');
         $('#item-amount').val(0);
         $('#item-amount-text').val(0);
+        contextMenuSelectedItem = null;
+        ItemInventory = null;
     }
 });
 
@@ -229,11 +231,16 @@ $(document).on("click", "#item-give", function(e) {
     }
 });
 
-// Close contextmenu on rightclick while opened
+// Close contextmenu on click outside while opened
 $(document).click(function(event) {
     var rightClickMenu = $(".ply-iteminfo-container");
-    if (!rightClickMenu.is(event.target) && rightClickMenu.has(event.target).length === 0) {
+    var isClickOnItemSlot = $(event.target).closest('.item-slot').length > 0;
+    var isClickOnMenu = rightClickMenu.is(event.target) || rightClickMenu.has(event.target).length > 0;
+    
+    if (!isClickOnMenu && !isClickOnItemSlot && rightClickMenu.is(':visible')) {
         rightClickMenu.fadeOut(100);
+        contextMenuSelectedItem = null;
+        ItemInventory = null;
     }
 });
 
@@ -2759,23 +2766,29 @@ var requiredItemOpen = false;
         }
         $(".player-inventory").append(backpackSlots);
 
-        var remainingSlots = $(".player-inventory");
-        for (i = 7; i < data.slots + 1; i++) {
+        // Create remaining slots (7+) directly in player-inventory container
+        // Make sure data.slots is defined and valid - use Inventory.slots as fallback
+        var maxSlots = (data.slots && data.slots > 0) ? data.slots : (Inventory.slots || 15);
+        // Create slots from 7 to maxSlots (inclusive)
+        // We already removed all direct child item-slots above, so we need to recreate them all
+        for (i = 7; i <= maxSlots; i++) {
+            // Skip slot 43 (locked slot) - it's handled separately
             if (i == 43) {
-                remainingSlots.append(
-                    '<div class="item-slot" data-slot="' +
-                    i +
-                    '"><div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-                );
-            } else {
-                remainingSlots.append(
-                    '<div class="item-slot" data-slot="' +
-                    i +
-                    '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-                );
+                continue;
             }
+            // Always create the slot since we removed all direct children above
+            $(".player-inventory").append(
+                '<div class="item-slot" data-slot="' +
+                i +
+                '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
         }
-        $(".player-inventory").append(remainingSlots);
+        // Handle slot 43 separately if it's within the range
+        if (43 <= maxSlots) {
+            $(".player-inventory").append(
+                '<div class="item-slot" data-slot="43"><div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
+        }
 
         if (data.other != null && data.other != "") {
             for (i = 1; i < data.other.slots + 1; i++) {
@@ -3051,14 +3064,44 @@ var requiredItemOpen = false;
     Inventory.Update = function(data) {
         totalWeight = 0;
         totalWeightOther = 0;
-        $(".player-inventory").find(".item-slot").remove();
+        // Remove all slots from sub-containers first
         $(".player-inventory-first").find(".item-slot").remove();
         $(".player-inventory-second").find(".item-slot").remove();
         $(".player-inventory-backpack").find(".item-slot").remove();
         $(".ply-hotbar-inventory").find(".item-slot").remove();
+        // Remove only the direct child item-slot elements from player-inventory (slots 1-6 and 7+)
+        // Don't remove slots from first, second, backpack containers as they're handled above
+        $(".player-inventory").children(".item-slot").remove();
+        // Also clear other inventory slots if other inventory is being updated
+        if (data.other != null && data.other != "") {
+            $(".other-inventory").find(".item-slot").remove();
+        }
         if (data.error) {
             Inventory.Error();
         }
+        
+        // Recreate other inventory slots if other inventory is being updated
+        if (data.other != null && data.other != "" && data.other.slots) {
+            for (i = 1; i < data.other.slots + 1; i++) {
+                $(".other-inventory").append(
+                    '<div class="item-slot" data-slot="' +
+                    i +
+                    '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+                );
+            }
+        }
+        
+        // Create slots 1-6 first (hotbar slots)
+        for (i = 1; i < 7; i++) {
+            $(".player-inventory").append(
+                '<div class="item-slot" data-slot="' +
+                i +
+                '"><div class="item-slot-key"><p>' +
+                i +
+                '</p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
+        }
+        
         var firstSlots = $(".player-inventory-first");
         for (i = 111; i < 116; i++) {
             firstSlots.append(
@@ -3093,23 +3136,29 @@ var requiredItemOpen = false;
         }
         $(".player-inventory").append(backpackSlots);
 
-        var remainingSlots = $(".player-inventory");
-        for (i = 7; i < data.slots + 1; i++) {
+        // Create remaining slots (7+) directly in player-inventory container
+        // Make sure data.slots is defined and valid - use Inventory.slots as fallback
+        var maxSlots = (data.slots && data.slots > 0) ? data.slots : (Inventory.slots || 15);
+        // Create slots from 7 to maxSlots (inclusive)
+        // We already removed all direct child item-slots above, so we need to recreate them all
+        for (i = 7; i <= maxSlots; i++) {
+            // Skip slot 43 (locked slot) - it's handled separately
             if (i == 43) {
-                remainingSlots.append(
-                    '<div class="item-slot" data-slot="' +
-                    i +
-                    '"><div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-                );
-            } else {
-                remainingSlots.append(
-                    '<div class="item-slot" data-slot="' +
-                    i +
-                    '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
-                );
+                continue;
             }
+            // Always create the slot since we removed all direct children above
+            $(".player-inventory").append(
+                '<div class="item-slot" data-slot="' +
+                i +
+                '"><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
         }
-        $(".player-inventory").append(remainingSlots);
+        // Handle slot 43 separately if it's within the range
+        if (43 <= maxSlots) {
+            $(".player-inventory").append(
+                '<div class="item-slot" data-slot="43"><div class="item-slot-key"><p>6 <i class="fas fa-lock"></i></p></div><div class="item-slot-img"></div><div class="item-slot-label"><p>&nbsp;</p></div></div>'
+            );
+        }
 
         $.each(data.inventory, function(i, item) {
             if (item != null) {
@@ -3188,6 +3237,89 @@ var requiredItemOpen = false;
                 }
             }
         });
+
+        // Handle other inventory items if present
+        if (
+            data.other != null &&
+            data.other != "" &&
+            data.other.inventory != null
+        ) {
+            $.each(data.other.inventory, function(i, item) {
+                if (item != null) {
+                    totalWeightOther += item.weight * item.amount;
+                    var ItemLabel =
+                        '<div class="item-slot-label"><p>' + item.label + "</p></div>";
+                    ItemLabel =
+                        '<div class="item-slot-quality"><div class="item-slot-quality-bar"><p>100</p></div></div><div class="item-slot-label"><p>' +
+                        item.label +
+                        "</p></div>";
+                    $(".other-inventory")
+                        .find("[data-slot=" + item.slot + "]")
+                        .addClass("item-drag");
+                    if (item.price != null) {
+                        $(".other-inventory")
+                            .find("[data-slot=" + item.slot + "]")
+                            .html(
+                                '<div class="item-slot-img"><img src="images/' +
+                                item.image +
+                                '" alt="' +
+                                item.name +
+                                '" /></div><div class="item-slot-amount"><p>' +
+                                item.amount +
+                                '</div><div class="item-slot-name"><p>' +
+                                " $" +
+                                item.price +
+                                "</p></div>" +
+                                ItemLabel
+                            );
+                    } else {
+                        $(".other-inventory")
+                            .find("[data-slot=" + item.slot + "]")
+                            .html(
+                                '<div class="item-slot-img"><img src="images/' +
+                                item.image +
+                                '" alt="' +
+                                item.name +
+                                '" /></div><div class="item-slot-amount"><p>' +
+                                item.amount +
+                                '</div><div class="item-slot-name"><p>' +
+                                " " +
+                                ((item.weight * item.amount) / 1000).toFixed(1) +
+                                "</p></div>" +
+                                ItemLabel
+                            );
+                    }
+                    $(".other-inventory")
+                        .find("[data-slot=" + item.slot + "]")
+                        .data("item", item);
+                    Inventory.QualityCheck(item, false, true);
+                }
+            });
+            
+            // Update other inventory weight and label
+            if (data.other != null) {
+                var name = data.other.name ? data.other.name.toString() : "";
+                if (
+                    name != null &&
+                    (name.split("-")[0] == "itemshop" || name == "crafting")
+                ) {
+                    $("#other-inv-label").html(data.other.label);
+                } else {
+                    $("#other-inv-label").html(data.other.label);
+                    $("#other-inv-weight").html(
+                        (totalWeightOther / 1000).toFixed(2) +
+                        "kg" +
+                        "/" +
+                        (data.other.maxweight / 1000).toFixed(2) +
+                        "kg"
+                    );
+                }
+                otherMaxWeight = data.other.maxweight;
+                otherLabel = data.other.label;
+                var per1 = (totalWeightOther / 1000) / (otherMaxWeight / 100000)
+                $(".pro1").css("width", per1 + "%");
+            }
+        }
 
         var per = (totalWeight / 1000) / (data.maxweight / 100000)
         $(".pro").css("width", per + "%");
