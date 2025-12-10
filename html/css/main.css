@@ -383,10 +383,15 @@ body {
     margin-top: -0.6rem;
     margin-left: -93%;
     width: 19%;
+    min-width: 19%;
+    max-width: 19%;
     height: 78.2%;
+    min-height: 78.2%;
+    max-height: 78.2%;
     /* background: var(--color-primary); */
     padding: 10px;
     z-index: 10;
+    box-sizing: border-box;
 }
 
 .player-inventory-second {
@@ -394,10 +399,15 @@ body {
     margin-top: -0.6rem;
     margin-left: -28%;
     width: 19%;
+    min-width: 19%;
+    max-width: 19%;
     height: 78.2%;
+    min-height: 78.2%;
+    max-height: 78.2%;
     /* background: var(--color-primary); */
     padding: 10px;
     z-index: 10;
+    box-sizing: border-box;
 }
 
 .player-inventory-backpack {
@@ -405,13 +415,16 @@ body {
     top: 24.6rem;
     left: 0%;
     width: 90.22%;
+    min-width: 90.22%;
     max-width: 132.22%;
     height: 58%;
+    min-height: 58%;
     max-height: 132%;
     float: right;
     overflow-x: hidden;
     overflow-y: scroll;
     z-index: 100;
+    box-sizing: border-box;
 }
 
 .other-inventory-bg {
@@ -563,8 +576,12 @@ body {
 .item-slot {
     position: relative;
     width: 90px;
+    min-width: 90px;
+    max-width: 90px;
     border-radius: 2px;
     height: 90px;
+    min-height: 90px;
+    max-height: 90px;
     float: left;
     background: radial-gradient(83% 83% at 50% 50%, rgba(180, 180, 180, 0.158), rgba(120, 120, 120, .05));
     box-shadow: 0rem 0rem 30px 5px #17191cd8 inset;
@@ -576,6 +593,8 @@ body {
     will-change: transform, opacity;
     transform: translateZ(0);
     backface-visibility: hidden;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .item-slot:active {
