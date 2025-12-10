@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 author 'pooyahpx'
 description 'qb-inventory'
-version '1.6.5'
+version '1.6.7'
 
 shared_scripts {
 	'config.lua',
