@@ -573,13 +573,50 @@ RegisterNetEvent('inventory:client:OpenInventory', function(PlayerAmmo, inventor
 end)
 
 RegisterNetEvent('inventory:client:UpdateOtherInventory', function(items, isError)
-    SendNUIMessage({
-        action = "update",
-        inventory = items,
-        maxweight = Config.MaxInventoryWeight,
-        slots = Config.MaxInventorySlots,
-        error = isError,
-    })
+    -- Check if we have merged-drops open
+    if currentOtherInventory == "merged-drops" then
+        -- For merged-drops, send update with other inventory data
+        -- Convert items array to object format (slot-based) for JS
+        local otherInv = {}
+        if type(items) == "table" then
+            for i, item in ipairs(items) do
+                if item then
+                    -- Use slot from item or index
+                    local slot = item.slot or i
+                    otherInv[slot] = item
+                end
+            end
+        end
+        
+        local slotCount = 0
+        for _ in pairs(otherInv) do
+            slotCount = slotCount + 1
+        end
+        
+        SendNUIMessage({
+            action = "update",
+            inventory = PlayerData.items,
+            other = {
+                name = "merged-drops",
+                label = "Ground Items",
+                inventory = otherInv,
+                slots = slotCount > 0 and slotCount or 30,
+                maxweight = 100000
+            },
+            maxweight = Config.MaxInventoryWeight,
+            slots = Config.MaxInventorySlots,
+            error = isError,
+        })
+    else
+        -- For other inventory types, use standard update
+        SendNUIMessage({
+            action = "update",
+            inventory = PlayerData.items,
+            maxweight = Config.MaxInventoryWeight,
+            slots = Config.MaxInventorySlots,
+            error = isError,
+        })
+    end
 end)
 
 RegisterNetEvent('inventory:client:UpdatePlayerInventory', function(isError)
@@ -711,9 +748,16 @@ RegisterNetEvent('inventory:client:UseWeapon', function(weaponData, shootbool)
         SetPedAmmo(ped, weaponHash, ammo)
         SetCurrentPedWeapon(ped, weaponHash, true)
 
+        -- Apply attachments after weapon is equipped
         if weaponData.info and weaponData.info.attachments then
+            Wait(100) -- Small delay to ensure weapon is fully loaded
             for _, attachment in pairs(weaponData.info.attachments) do
-                GiveWeaponComponentToPed(ped, weaponHash, joaat(attachment.component))
+                if attachment and attachment.component then
+                    local componentHash = joaat(attachment.component)
+                    if componentHash and componentHash ~= 0 then
+                        GiveWeaponComponentToPed(ped, weaponHash, componentHash)
+                    end
+                end
             end
         end
 
@@ -754,9 +798,7 @@ end)
 
 RegisterNetEvent('inventory:client:DropItemAnim', function()
     local ped = PlayerPedId()
-    SendNUIMessage({
-        action = "close",
-    })
+    -- Removed SendNUIMessage with action "close" to prevent inventory from closing when dropping items
     RequestAnimDict("pickup_object")
     while not HasAnimDictLoaded("pickup_object") do
         Wait(7)
@@ -888,8 +930,9 @@ RegisterCommand('inventory', function()
                 OpenTrunk()
             elseif CurrentGlovebox then
                 TriggerServerEvent("inventory:server:OpenInventory", "glovebox", CurrentGlovebox)
-            elseif CurrentDrop ~= 0 then
-                TriggerServerEvent("inventory:server:OpenInventory", "drop", CurrentDrop)
+            elseif CurrentDrop ~= 0 or DropsNear and next(DropsNear) then
+                -- Open merged drops (all nearby drops) instead of single drop
+                TriggerServerEvent("inventory:server:OpenInventory", "drop", "all")
             elseif VendingMachine then
                 local ShopItems = {}
                 ShopItems.label = "Vending Machine"
