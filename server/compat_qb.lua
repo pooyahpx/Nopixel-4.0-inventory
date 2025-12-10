@@ -31,3 +31,7 @@ QBCore.Functions.CreateCallback('QBCore:HasItem', function(src, cb, items, amoun
     local has = QBCore.Functions.HasItem(src, items, amount)
     cb(has and true or false)
 end)
+
+-- Note: GetItemByName and SetInventory exports are registered in server/main.lua
+-- They are available as: exports['qb-inventory']:GetItemByName(source, item)
+-- and: exports['qb-inventory']:SetInventory(source, items)
