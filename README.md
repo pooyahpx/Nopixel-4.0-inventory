@@ -13,7 +13,7 @@
 
 connect via f8 console 
 
-# connect 217.154.76.167
+**connect 217.154.76.167**
 
 # NOTE 
 
