@@ -513,7 +513,14 @@ RegisterNetEvent('inventory:client:OpenInventory', function(PlayerAmmo, inventor
                     currentOtherInventory = other.name
                 end
                 QBCore.Functions.TriggerCallback('inventory:server:ConvertQuality', function(data)
-                    skelly = exports["ir_skeleton"]:SkeletonDamages()
+                    -- Safely get skeleton data with error handling
+                    local skelly = nil
+                    local success, result = pcall(function()
+                        return exports["ir_skeleton"]:SkeletonDamages()
+                    end)
+                    if success and result then
+                        skelly = result
+                    end
                     inventory = data.inventory
                     other = data.other
                     local md = PlayerData.metadata or {}
