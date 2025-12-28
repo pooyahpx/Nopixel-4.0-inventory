@@ -1366,6 +1366,30 @@ local function OpenInventory(name, id, other, origin)
 end
 exports('OpenInventory',OpenInventory)
 
+-- Export function for admin menu to open player inventory by ID
+local function OpenInventoryById(adminSource, targetPlayerId)
+	if not adminSource or not targetPlayerId then
+		return false
+	end
+	
+	local AdminPlayer = QBCore.Functions.GetPlayer(adminSource)
+	local TargetPlayer = QBCore.Functions.GetPlayer(tonumber(targetPlayerId))
+	
+	if not AdminPlayer then
+		return false
+	end
+	
+	if not TargetPlayer then
+		QBCore.Functions.Notify(adminSource, "Player not found!", "error")
+		return false
+	end
+	
+	-- Use the existing OpenInventory function with "otherplayer" name
+	OpenInventory("otherplayer", tostring(targetPlayerId), nil, adminSource)
+	return true
+end
+exports('OpenInventoryById', OpenInventoryById)
+
 -- Events
 
 -- Player methods are now handled through exports, no need for AddPlayerMethod
