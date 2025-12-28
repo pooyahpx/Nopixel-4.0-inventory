@@ -49,7 +49,7 @@ Don't hesitate—I'm always open to discuss and connect! 🚀
 
 # UPDATE V1.6.7 
 
-# qb-inventory  – Recent Changes 
+# qb-inventory 
 
 - ✅ QBox/QBCore auto-detection works
 - ✅ Inventory doesn't close when dropping items
