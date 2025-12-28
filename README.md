@@ -9,11 +9,6 @@
 > 👉 [poya3724](https://discord.com/users/1000336589140021278)
 
 
-**connect and test NP 4.0 inventory version 2**
-
-connect via f8 console 
-
-**connect 217.154.76.167**
 
 # NOTE 
 
