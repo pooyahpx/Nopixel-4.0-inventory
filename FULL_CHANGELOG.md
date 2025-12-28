@@ -1,6 +1,4 @@
-# Full Changelog - qb-inventory Fixes V 1.6.7
-
-#VERSION 1.6.7
+# Full Changelog - qb-inventory Fixes
 
 ## Complete List of Fixes and Changes
 
@@ -229,6 +227,43 @@
 
 ---
 
+### 14. Fixed: Missing OpenInventoryById Export for Admin Menu
+**Issue:** Admin menu trying to open player inventory by ID was failing with error: `No such export OpenInventoryById in resource qb-inventory`
+
+**Fix:**
+- Created `OpenInventoryById` export function that allows admins to open any player's inventory by their ID
+- Function validates admin source and target player ID
+- Uses existing "otherplayer" inventory system
+- Returns `true` on success, `false` on failure
+- Shows error notification if target player not found
+
+**Files Changed:**
+- `server/main.lua`: Added `OpenInventoryById` export function
+
+**Usage:**
+```lua
+exports['qb-inventory']:OpenInventoryById(adminSource, targetPlayerId)
+```
+
+**Status:** ✅ Fixed
+
+---
+
+### 15. Fixed: SkeletonDamages Export Error When Progressbar Enabled
+**Issue:** When enabling the progressbar for opening inventory (`Config.Progressbar.Enable = true`), the script crashes with error: `No such export SkeletonDamages in resource ir_skeleton`
+
+**Fix:**
+- Added `pcall` wrapper around `exports["ir_skeleton"]:SkeletonDamages()` call to safely handle missing export
+- If the export doesn't exist or fails, `skelly` is set to `nil` instead of crashing
+- UI already handles `nil` skeleton data gracefully (checks `if (data.skelly)` before using it)
+
+**Files Changed:**
+- `client/main.lua`: Added safe error handling for skeleton export in progressbar callback
+
+**Status:** ✅ Fixed
+
+---
+
 ## Summary of All Changes
 
 ### Files Modified:
@@ -242,7 +277,7 @@
 - `html/css/main.css` - CSS styling fixes
 - `fxmanifest.lua` - Resource manifest updates
 
-### Total Fixes: 13 major issues resolved
+### Total Fixes: 15 major issues resolved
 ### Status: ✅ All fixes tested and working
 
 ---
@@ -261,5 +296,7 @@
 - ✅ Admin /giveitem command works correctly
 - ✅ Items appear immediately in inventory after /giveitem
 - ✅ Error messages are clear and specific
+
+---
 
 
