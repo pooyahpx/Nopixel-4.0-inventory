@@ -44,6 +44,7 @@ Don't hesitate—I'm always open to discuss and connect! 🚀
 ![Screenshot (442)](https://github.com/user-attachments/assets/9a3c786c-b761-4f7e-8251-1ec39867117d)
 
 # UPDATE V1.7.0 (LAST FREE UPDATE) NEW QBCORE AND QBOX
+
 - ✅ Missing OpenInventoryById export added for admin menu
 - ✅ SkeletonDamages export error fixed when progressbar enabled
 
